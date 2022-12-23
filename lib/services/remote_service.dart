@@ -19,5 +19,18 @@ class RemoteService {
     }
   }
 
+  Future<Itinerary?> getItineraryDetails({required String id}) async {
+    var client = http.Client();
+
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    var uri = Uri.parse('$apiBaseUrl/itineraries/$id');
+    var response = await client.get(uri);
+    if (response.statusCode == 200) {
+      var data = response.body;
+      return itineraryFromJson(data)[0];
+    }
+    return null;
+  }
+
   // Future<List<City>?> getCities() async {}
 }
