@@ -17,8 +17,11 @@ class Itinerary {
   Itinerary({
     required this.id,
     required this.pickup_city_ids,
+    required this.image_url,
+    required this.trip_name,
+    required this.operator_name,
     this.price,
-    this.date,
+    required this.date,
     this.description,
     required this.classification,
     required this.trip_id,
@@ -27,8 +30,11 @@ class Itinerary {
 
   String id;
   List<String> pickup_city_ids;
+  String image_url;
+  String trip_name;
+  String operator_name;
   num? price;
-  final date;
+  String date;
   String? description;
   String classification;
   String trip_id;
@@ -37,8 +43,11 @@ class Itinerary {
   factory Itinerary.fromJson(Map<String, dynamic> json) => Itinerary(
     id: json['id'] ?? const Uuid().v4(),
     pickup_city_ids: json['pickup_city_ids'].cast<String>(),
+    image_url: json['trip']['image_url'],
+    trip_name: json['trip']['name'],
+    operator_name: json['operator']['name'],
     price: json['price'],
-    date: json['date'],
+    date: json['formatted_date'],
     description: json['description'],
     classification: json['classification'],
     trip_id: json['trip_id'],
@@ -49,6 +58,9 @@ class Itinerary {
     'id': id,
     'pickup_city_ids': pickup_city_ids,
     'price': price,
+    'image_url': image_url,
+    'trip_name': trip_name,
+    'operator_name': operator_name,
     'date': date,
     'description': description,
     'classification': classification,
