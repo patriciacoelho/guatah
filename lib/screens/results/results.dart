@@ -38,10 +38,11 @@ class _ResultsPageState extends State<ResultsPage> {
     List<Widget> list = <Widget>[];
 
     for (var i = 0; i < itineraries!.length; i++) {
-      log(itineraries![i].image_url);
       list.add(
         ListItem(
+          id: itineraries![i].id,
           title: itineraries![i].trip_name,
+          secondaryInfo: itineraries![i].operator_name,
           extraInfo: '${itineraries![i].date} • ${itineraries![i].classification}',
           imageUrl: itineraries![i].image_url,
         ),
