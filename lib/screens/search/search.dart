@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
-import 'package:guatah/models/itinerary.dart';
-import 'package:guatah/services/remote_service.dart';
+import 'package:guatah/screens/results/results.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_input.dart';
 import 'package:guatah/widgets/custom_radio_group.dart';
@@ -16,8 +13,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Itinerary>? itineraries;
-  bool loadingData = true;
 
   final List<Option> _durationOptions = [
     Option(text: '1 dia', value: 'bate-volta'),
@@ -36,17 +31,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    getData();
-  }
-
-  getData() async {
-    itineraries = await RemoteService().getItineraries();
-    if (itineraries != null) {
-      log("debug message", error: itineraries);
-      setState(() {
-        loadingData = false;
-      });
-    }
   }
 
   @override
@@ -115,7 +99,12 @@ class _SearchPageState extends State<SearchPage> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 32.0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ResultsPage()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),
                 textStyle: const TextStyle(
