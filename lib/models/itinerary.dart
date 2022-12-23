@@ -4,7 +4,12 @@ import 'package:uuid/uuid.dart';
 
 List<Itinerary> itineraryFromJson(String str) {
   var data = json.decode(str);
-  // log('is object', error: data['itinerary'] != null);
+
+  if (data['itinerary'] != null) {
+    data = data['itinerary'];
+    return List<Itinerary>.from([data].map((value) => Itinerary.fromJson(value)));
+  }
+
   if (data['itineraries'] != null) {
     data = data['itineraries'];
   }
@@ -41,7 +46,7 @@ class Itinerary {
   String operator_id;
 
   factory Itinerary.fromJson(Map<String, dynamic> json) => Itinerary(
-    id: json['id'] ?? const Uuid().v4(),
+    id: json['_id'] ?? const Uuid().v4(),
     pickup_city_ids: json['pickup_city_ids'].cast<String>(),
     image_url: json['trip']['image_url'],
     trip_name: json['trip']['name'],
