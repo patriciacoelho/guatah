@@ -198,25 +198,45 @@ class _DetailsPageState extends State<DetailsPage> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            Text(itinerary != null ? 'R\$ ${itinerary!.price}' : ''),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+        elevation: 0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: const BoxDecoration(
+            color: lightShadowColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
+            )
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                itinerary != null ? 'R\$ ${(itinerary!.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}' : '',
+                style: const TextStyle(
+                  color: primaryColor,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w700,
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 48.0),
-                backgroundColor: primaryColor,
-                foregroundColor: Colors.white,
-                elevation: 0,
               ),
-              child: const Text('Reservar'),
-            ),
-          ]),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 32.0),
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                ),
+                child: const Text('Reservar'),
+              ),
+            ]),
+        ),
       ),
     );
   }
