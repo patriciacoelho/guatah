@@ -7,8 +7,9 @@ class CustomAppBar extends StatelessWidget {
   final bool? noBackNavigation;
   final Function? rightCallback;
   final String? pageTitle;
+  final Color? color; 
 
-  const CustomAppBar({super.key,  this.rightIcon, this.noBackNavigation = false, this.rightCallback, this.pageTitle });
+  const CustomAppBar({super.key,  this.rightIcon, this.noBackNavigation = false, this.rightCallback, this.pageTitle, this.color = Colors.black });
 
   Widget get _buildBackNavigator {
     return Container(
@@ -16,9 +17,9 @@ class CustomAppBar extends StatelessWidget {
           shape: BoxShape.circle,
           color: Colors.transparent,
         ),
-        child: const Icon(
+        child: Icon(
           Ionicons.chevron_back,
-          color: Colors.black,
+          color: color,
         ),
       );
   }
@@ -67,7 +68,7 @@ class CustomAppBar extends StatelessWidget {
               ),
               child: Icon(
                 rightIcon,
-                color: noBackNavigation! ? primaryColor : Colors.black,
+                color: noBackNavigation! ? primaryColor : color,
                 size: noBackNavigation! ? 48 : 24,
               ),
             ),
