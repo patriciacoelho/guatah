@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:convert';
 
 import 'package:guatah/models/itinerary.dart';
+import 'package:guatah/models/operator.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteService {
@@ -17,6 +18,7 @@ class RemoteService {
       var data = response.body;
       return itineraryFromJson(data);
     }
+    return null;
   }
 
   Future<Itinerary?> getItineraryDetails({required String id}) async {
@@ -28,6 +30,32 @@ class RemoteService {
     if (response.statusCode == 200) {
       var data = response.body;
       return itineraryFromJson(data)[0];
+    }
+    return null;
+  }
+
+  Future<List<Operator>?> getOperators() async {
+    var client = http.Client();
+
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    var uri = Uri.parse('$apiBaseUrl/operators');
+    var response = await client.get(uri);
+    if (response.statusCode == 200) {
+      var data = response.body;
+      return operatorFromJson(data);
+    }
+    return null;
+  }
+
+  Future<Operator?> getOperator({required String id}) async {
+    var client = http.Client();
+
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    var uri = Uri.parse('$apiBaseUrl/operators/$id');
+    var response = await client.get(uri);
+    if (response.statusCode == 200) {
+      var data = response.body;
+      return operatorFromJson(data)[0];
     }
     return null;
   }
