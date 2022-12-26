@@ -12,10 +12,10 @@ class SimpleCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => OperatorPage(id: id)),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OperatorPage(id: id)),
+        );
       },
       child: SizedBox(
         width: 90.0,
