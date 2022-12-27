@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
+import 'package:guatah/models/category.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/models/operator.dart';
 import 'package:guatah/services/remote_service.dart';
@@ -10,6 +11,7 @@ import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_input.dart';
 import 'package:guatah/widgets/custom_navigation_bar.dart';
 import 'package:guatah/widgets/highlight_card_item.dart';
+import 'package:guatah/widgets/rounded_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
 import 'package:ionicons/ionicons.dart';
 
@@ -22,14 +24,17 @@ class _HomePageState extends State<HomePage> {
   var pageIndex = 0;
   List<Operator>? operators;
   List<Itinerary>? itineraries;
+  List<Category>? categories;
   bool loadingOperatorsData = true;
   bool loadingItinerariesData = true;
+  bool loadingCategoriesData = true;
 
   @override
   void initState() {
     super.initState();
     getOperatorsData();
     getItinerariesData();
+    getCategoriesData();
   }
 
   getOperatorsData() async {
@@ -48,6 +53,16 @@ class _HomePageState extends State<HomePage> {
       log("debug message", error: itineraries);
       setState(() {
         loadingItinerariesData = false;
+      });
+    }
+  }
+
+  getCategoriesData() async {
+    categories = await RemoteService().getCategories();
+    if (categories != null) {
+      log("debug message", error: categories);
+      setState(() {
+        loadingCategoriesData = false;
       });
     }
   }
@@ -77,6 +92,33 @@ class _HomePageState extends State<HomePage> {
             subtitle: trips[i].operator_name,
             date: trips[i].date,
             imageUrl: trips[i].image_url,
+          ),
+        ),
+      );
+    }
+
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: list,
+    );
+  }
+
+  Widget getCategoriesListWidget()
+  {
+    List<Widget> list = <Widget>[];
+
+    for (var i = 0; i < categories!.length; i++) {
+      list.add(
+        Container(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: GestureDetector(
+            onTap: () {
+              log('category select ${categories![i].name}');
+            },
+            child: RoundedItem(
+              title: categories![i].name,
+              imageUrl: categories![i].image_url,
+            ),
           ),
         ),
       );
@@ -166,6 +208,28 @@ class _HomePageState extends State<HomePage> {
                         ),
                       )
                       : const Text('Nenhuma empresa encontrada'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: const Text(
+                      'Categorias',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: !loadingCategoriesData ?
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 80.0,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [getCategoriesListWidget()],
+                        ),
+                      )
+                      : const Text('Nenhuma categoria encontrada'),
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 24, bottom: 16),
