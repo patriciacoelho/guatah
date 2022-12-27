@@ -25,7 +25,7 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
     id: json['_id'] ?? const Uuid().v4(),
-    image_url: json['logo_url'] ?? '',
+    image_url: json['image_url'] ?? '',
     name: json['name'],
   );
 
