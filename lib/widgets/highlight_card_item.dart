@@ -84,7 +84,7 @@ class HighlightCardItem extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.only(left: 4, top: 3),
                               child: Text(
-                                date!,
+                                date!.substring(0, 5),
                                 style: const TextStyle(
                                   color: mediumGreyColor,
                                   fontSize: 12.0,
