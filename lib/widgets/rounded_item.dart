@@ -22,7 +22,7 @@ class RoundedItem extends StatelessWidget {
                 border: Border.all(color: const Color(0xFFF5F5F5)),
                 borderRadius: BorderRadius.circular(25),
               ),
-              child: imageUrl != null ? ClipRRect(
+              child: imageUrl != null && imageUrl != '' ? ClipRRect(
                 borderRadius: BorderRadius.circular(25),
                 child: Image.network(
                   imageUrl!,
@@ -32,14 +32,17 @@ class RoundedItem extends StatelessWidget {
                 ),
               ) : null,
             ),
-            Container(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14.0,
-                  color: Color(0xFF565555),
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14.0,
+                    color: Color(0xFF565555),
+                  ),
                 ),
               ),
             ),
