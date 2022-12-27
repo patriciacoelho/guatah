@@ -11,6 +11,7 @@ import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_input.dart';
 import 'package:guatah/widgets/custom_navigation_bar.dart';
 import 'package:guatah/widgets/highlight_card_item.dart';
+import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/rounded_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
 import 'package:ionicons/ionicons.dart';
@@ -98,9 +99,32 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: list,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: list,
     );
+  }
+
+  Widget getRecommendedListWidget()
+  {
+    List<Widget> list = <Widget>[];
+    List<Itinerary>? recommended = itineraries?.sublist(0, 3);
+
+    for (var i = 0; i < recommended!.length; i++) {
+      list.add(
+        Container(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: ListItem(
+            id: recommended[i].id,
+            title: recommended[i].trip_name,
+            secondaryInfo: recommended[i].operator_name,
+            extraInfo: '${recommended[i].date} • ${recommended[i].classification}',
+            imageUrl: recommended[i].image_url,
+          ),
+        ),
+      );
+    }
+
+    return Column(children: list);
   }
 
   Widget getCategoriesListWidget()
@@ -125,8 +149,8 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: list,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: list,
     );
   }
 
@@ -230,6 +254,34 @@ class _HomePageState extends State<HomePage> {
                         ),
                       )
                       : const Text('Nenhuma categoria encontrada'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Recomendados',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Ver mais',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: !loadingItinerariesData ?
+                      getRecommendedListWidget()
+                      : const Text('Nenhum recomendado'),
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 24, bottom: 16),
