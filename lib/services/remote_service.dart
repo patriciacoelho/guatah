@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:guatah/models/category.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/models/operator.dart';
+import 'package:guatah/models/tagged.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteService {
@@ -70,6 +71,20 @@ class RemoteService {
     if (response.statusCode == 200) {
       var data = response.body;
       return categoryFromJson(data);
+    }
+    return null;
+  }
+
+  Future<List<Tagged>?> getTagged() async {
+    const userId = '632c33609cd2d2830bde5c0b';
+    var client = http.Client();
+
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    var uri = Uri.parse('$apiBaseUrl/taggeds/$userId');
+    var response = await client.get(uri);
+    if (response.statusCode == 200) {
+      var data = response.body;
+      return taggedFromJson(data);
     }
     return null;
   }
