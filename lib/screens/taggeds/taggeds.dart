@@ -7,6 +7,7 @@ import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_navigation_bar.dart';
 import 'package:guatah/widgets/dash_tab_indicator.dart';
 import 'package:guatah/widgets/list_item.dart';
+import 'package:guatah/widgets/simple_card_item.dart';
 
 class TaggedsPage extends StatefulWidget {
   @override
@@ -62,16 +63,21 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
     for (var i = 0; i < taggedList!.length; i++) {
       if (taggedList![i].tripId != null) {
         list.add(
-          ListItem( // TODO: substituir por widget simplificado
-            id: taggedList![i].itineraryId ?? 'id',
+          SimpleCardItem(
+            id: taggedList![i].tripId ?? '',
             title: taggedList![i].trip_name,
             imageUrl: taggedList![i].image_url,
+            large: true,
           ),
         );
       }
     }
 
-    return Column(children: list);
+    return Wrap(
+      spacing: 12,
+      runSpacing: 20,
+      children: list,
+    );
   }
 
   @override
