@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guatah/constants/colors.dart';
 import 'package:guatah/screens/operator/operator.dart';
 
 class SimpleCardItem extends StatelessWidget {
   final String id;
   final String title;
   final String? imageUrl;
+  final bool large;
 
-  const SimpleCardItem({ super.key, required this.title, this.imageUrl, required this.id });
+  const SimpleCardItem({ super.key, required this.title, this.imageUrl, this.large = false, required this.id });
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +20,12 @@ class SimpleCardItem extends StatelessWidget {
         );
       },
       child: SizedBox(
-        width: 90.0,
+        width: large ? 150.0 : 90.0,
         child: Column(
           children: [
             Container(
-              width: 90,
-              height: 90,
+              width: large ? 150.0 : 90.0,
+              height: large ? 150.0 : 90.0,
               decoration: BoxDecoration(
                 border: Border.all(color: const Color(0xFFF5F5F5)),
                 borderRadius: BorderRadius.circular(16),
@@ -32,8 +34,6 @@ class SimpleCardItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
                   imageUrl!,
-                  width: 90,
-                  height: 90,
                   fit: BoxFit.fill,
                 ),
               ) : null,
@@ -43,10 +43,10 @@ class SimpleCardItem extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14.0,
-                  color: Color(0xFF565555),
+                  color: large ? primaryColor : const Color(0xFF565555),
                 ),
               ),
             ),
