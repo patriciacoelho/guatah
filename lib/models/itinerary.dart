@@ -31,6 +31,9 @@ class Itinerary {
     required this.classification,
     required this.trip_id,
     required this.operator_id,
+    this.instagram,
+    this.site,
+    this.whatsapp,
   });
 
   String id;
@@ -44,6 +47,9 @@ class Itinerary {
   String classification;
   String trip_id;
   String operator_id;
+  String? instagram;
+  String? site;
+  String? whatsapp;
 
   factory Itinerary.fromJson(Map<String, dynamic> json) => Itinerary(
     id: json['_id'] ?? const Uuid().v4(),
@@ -57,6 +63,9 @@ class Itinerary {
     classification: json['classification'],
     trip_id: json['trip_id'],
     operator_id: json['operator_id'],
+    instagram: json['operator']['social_networks']['instagram'],
+    site: json['operator']['social_networks']['site'],
+    whatsapp: json['operator']['social_networks']['whatsapp'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -71,5 +80,8 @@ class Itinerary {
     'classification': classification,
     'trip_id': trip_id,
     'operator_id': operator_id,
+    'instagram': instagram,
+    'site': site,
+    'whatsapp': whatsapp,
   };
 }
