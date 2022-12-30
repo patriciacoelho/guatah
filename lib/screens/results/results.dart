@@ -9,6 +9,10 @@ import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/list_item.dart';
 
 class ResultsPage extends StatefulWidget {
+  final Map<String, dynamic>? params;
+
+  const ResultsPage({ super.key, this.params });
+
   @override
   _ResultsPageState createState() => _ResultsPageState();
 }
@@ -24,7 +28,7 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   getData() async {
-    itineraries = await RemoteService().getItineraries();
+    itineraries = await RemoteService().getItineraries(widget.params);
     if (itineraries != null) {
       log("debug message", error: itineraries);
       setState(() {
