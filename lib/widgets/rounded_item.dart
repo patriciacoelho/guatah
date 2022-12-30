@@ -13,6 +13,7 @@ class RoundedItem extends StatelessWidget {
       onTap: onPressed != null ? () => onPressed : null,
       child: SizedBox(
         width: 60.0,
+        height: 75.0,
         child: Column(
           children: [
             Container(
