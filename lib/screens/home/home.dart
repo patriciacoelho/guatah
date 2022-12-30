@@ -6,6 +6,7 @@ import 'package:guatah/constants/colors.dart';
 import 'package:guatah/models/category.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/models/operator.dart';
+import 'package:guatah/screens/results/results.dart';
 import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_input.dart';
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   getItinerariesData() async {
-    itineraries = await RemoteService().getItineraries();
+    itineraries = await RemoteService().getItineraries({});
     if (itineraries != null) {
       log("debug message", error: itineraries);
       setState(() {
@@ -137,7 +138,11 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: GestureDetector(
             onTap: () {
-              log('category select ${categories![i].name}');
+              final categoryId = categories![i].id;
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': [categoryId] })),
+                );
             },
             child: RoundedItem(
               title: categories![i].name,
