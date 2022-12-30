@@ -6,6 +6,7 @@ import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsPage extends StatefulWidget {
   final String id;
@@ -221,7 +222,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => _launchURL(itinerary!.site ?? itinerary!.whatsapp ?? itinerary!.instagram),
                 style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
                   textStyle: const TextStyle(
@@ -239,5 +240,16 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       ),
     );
+  }
+}
+
+_launchURL(String? url) async {
+  if (url!.isNotEmpty) {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
