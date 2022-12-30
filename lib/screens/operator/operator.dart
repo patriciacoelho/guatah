@@ -26,6 +26,7 @@ class _OperatorPageState extends State<OperatorPage> {
   List<Itinerary>? itineraries;
   bool loadingOperatorData = true;
   bool loadingItinerariesData = true;
+  bool descriptionCollapsed = true;
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class _OperatorPageState extends State<OperatorPage> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.maxFinite,
-          height: 920,
+          height: descriptionCollapsed ? 930 : 1000,
           child: Stack(
             children: [
               Positioned(
@@ -147,16 +148,42 @@ class _OperatorPageState extends State<OperatorPage> {
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 24.0),
-                              height: 150.0,
+                              height: descriptionCollapsed ? 190.0 : 245.0,
                               child: Column(
                                 children: [
-                                  Text(
-                                    operator!.description ?? '',
-                                    style: const TextStyle(
-                                      color: textColor,
-                                      fontSize: 12,
+                                  Flexible(
+                                    child: SizedBox(
+                                      height: descriptionCollapsed ? 180.0 : 245.0,
+                                      child: SingleChildScrollView(
+                                        physics: descriptionCollapsed ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                                        child: Text(
+                                          operator!.description ?? '',
+                                          overflow: descriptionCollapsed ? TextOverflow.ellipsis : null,
+                                          maxLines: descriptionCollapsed ? 7 : null,
+                                          style: const TextStyle(
+                                            color: textColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                  descriptionCollapsed ? InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        descriptionCollapsed = false;
+                                      });
+                                    },
+                                    child: const Text(
+                                      'continuar lendo',
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: mediumGreyColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ) : Container(),
                                 ],
                               ),
                             ),
