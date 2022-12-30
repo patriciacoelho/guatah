@@ -8,12 +8,13 @@ import 'package:guatah/models/tagged.dart';
 import 'package:http/http.dart' as http;
 
 class RemoteService {
-  Future<List<Itinerary>?> getItineraries() async {
+  Future<List<Itinerary>?> getItineraries(Map<String, dynamic>? params) async {
     var client = http.Client();
-
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
     log("debug message", error: apiBaseUrl);
-    var uri = Uri.parse('$apiBaseUrl/itineraries');
+
+    String queryString = Uri(queryParameters: params).query;
+    var uri = Uri.parse('$apiBaseUrl/itineraries?$queryString');
     log("debug message", error: uri);
     var response = await client.get(uri);
     if (response.statusCode == 200) {
