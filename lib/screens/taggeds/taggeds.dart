@@ -17,16 +17,40 @@ class TaggedsPage extends StatefulWidget {
 class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin {
   var pageIndex = 2;
   List<Tagged>? taggedList;
+  List<Tagged>? taggedPinupList;
   bool loadingTaggedData = true;
+  bool loadingTaggedPinupData = true;
+
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     getTaggedData();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      if (_tabController.index == 1) {
+        getTaggedPinupData();
+      }
+    }
+  }
+
+  getTaggedPinupData() async {
+    taggedPinupList = await RemoteService().getTagged({ 'already_know': 'true' });
+    if (taggedPinupList != null) {
+      log("debug message", error: taggedPinupList);
+      setState(() {
+        loadingTaggedPinupData = false;
+      });
+    }
   }
 
   getTaggedData() async {
-    taggedList = await RemoteService().getTagged();
+    taggedList = await RemoteService().getTagged({});
     if (taggedList != null) {
       log("debug message", error: taggedList);
       setState(() {
@@ -60,13 +84,13 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < taggedList!.length; i++) {
-      if (taggedList![i].tripId != null) {
+    for (var i = 0; i < taggedPinupList!.length; i++) {
+      if (taggedPinupList![i].tripId != null) {
         list.add(
           SimpleCardItem(
-            id: taggedList![i].tripId ?? '',
-            title: taggedList![i].trip_name,
-            imageUrl: taggedList![i].image_url,
+            id: taggedPinupList![i].tripId ?? '',
+            title: taggedPinupList![i].trip_name,
+            imageUrl: taggedPinupList![i].image_url,
             large: true,
           ),
         );
@@ -82,8 +106,6 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = TabController(length: 2, vsync: this);
-
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Container(
@@ -133,7 +155,7 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
                   SizedBox(
                     height: double.maxFinite,
                     width: double.maxFinite,
-                    child: !loadingTaggedData ?
+                    child: !loadingTaggedPinupData ?
                       ListView(children: [getTaggedPinupListWidget()])
                       : const Text('Nenhum item marcado'),
                   ),

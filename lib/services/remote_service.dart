@@ -76,12 +76,13 @@ class RemoteService {
     return null;
   }
 
-  Future<List<Tagged>?> getTagged() async {
+  Future<List<Tagged>?> getTagged(Map<String, dynamic>? params) async {
     const userId = '632c33609cd2d2830bde5c0b';
     var client = http.Client();
-
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
-    var uri = Uri.parse('$apiBaseUrl/taggeds/$userId');
+
+    String queryString = Uri(queryParameters: params).query;
+    var uri = Uri.parse('$apiBaseUrl/taggeds/$userId?$queryString');
     var response = await client.get(uri);
     if (response.statusCode == 200) {
       var data = response.body;
