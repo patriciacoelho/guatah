@@ -24,6 +24,7 @@ class Itinerary {
     required this.pickup_city_ids,
     required this.image_url,
     required this.trip_name,
+    required this.trip_categories,
     required this.operator_name,
     this.price,
     required this.date,
@@ -40,6 +41,7 @@ class Itinerary {
   List<String> pickup_city_ids;
   String image_url;
   String trip_name;
+  List<String> trip_categories;
   String operator_name;
   num? price;
   String date;
@@ -56,6 +58,7 @@ class Itinerary {
     pickup_city_ids: json['pickup_city_ids'].cast<String>(),
     image_url: json['trip']['image_url'],
     trip_name: json['trip']['name'],
+    trip_categories: json['trip']['categories'].cast<String>(),
     operator_name: json['operator']['name'],
     price: json['price'],
     date: json['formatted_date'],
@@ -74,6 +77,7 @@ class Itinerary {
     'price': price,
     'image_url': image_url,
     'trip_name': trip_name,
+    'trip_categories': trip_categories,
     'operator_name': operator_name,
     'date': date,
     'description': description,
