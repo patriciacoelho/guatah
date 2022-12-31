@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   getOperatorsData() async {
-    operators = await RemoteService().getOperators();
+    operators = await RemoteService().getOperators({});
     if (operators != null) {
       log("debug message", error: operators);
       setState(() {

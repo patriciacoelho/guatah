@@ -37,11 +37,12 @@ class RemoteService {
     return null;
   }
 
-  Future<List<Operator>?> getOperators() async {
+  Future<List<Operator>?> getOperators(Map<String, dynamic>? params) async {
     var client = http.Client();
-
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
-    var uri = Uri.parse('$apiBaseUrl/operators');
+
+    String queryString = Uri(queryParameters: params).query;
+    var uri = Uri.parse('$apiBaseUrl/operators?$queryString');
     var response = await client.get(uri);
     if (response.statusCode == 200) {
       var data = response.body;
