@@ -6,6 +6,11 @@ import 'package:uuid/uuid.dart';
 List<Tagged> taggedFromJson(String str) {
   var data = json.decode(str);
 
+  if (data['tagged'] != null) {
+    data = data['tagged'];
+    return List<Tagged>.from([data].map((value) => Tagged.fromJson(value)));
+  }
+
   if (data['taggeds'] != null) {
     data = data['taggeds'];
   }
