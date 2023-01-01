@@ -1,10 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
+import 'package:guatah/services/remote_service.dart';
 import 'package:ionicons/ionicons.dart';
 
 class TripTagDialog extends StatelessWidget {
   final bool? small;
-  const TripTagDialog({super.key, this.small = false });
+  final String itinerary_id;
+  final String trip_id;
+
+  const TripTagDialog({super.key, this.small = false, required this.itinerary_id, required this.trip_id });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,13 @@ class TripTagDialog extends StatelessWidget {
             child: Column(
               children: [
                 OutlinedButton(
-                  onPressed: () => {},
+                  onPressed: () async {
+                    final response = await RemoteService().createTagged({
+                      'trip_id': trip_id,
+                    });
+                    log(response);
+                    Navigator.pop(context, 'Ok');
+                  },
                   style: OutlinedButton.styleFrom(
                     shape: const StadiumBorder(),
                     side: const BorderSide(color: primaryColor),
@@ -33,7 +45,13 @@ class TripTagDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 8.0),
                 OutlinedButton(
-                  onPressed: () => {},
+                  onPressed: () async {
+                    final response = await RemoteService().createTagged({
+                      'itinerary_id': itinerary_id,
+                    });
+                    log(response);
+                    Navigator.pop(context, 'Ok');
+                  },
                   style: OutlinedButton.styleFrom(
                     shape: const StadiumBorder(),
                     side: const BorderSide(color: primaryColor),
