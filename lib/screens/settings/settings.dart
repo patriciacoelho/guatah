@@ -20,10 +20,8 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // CustomAppBar(Ionicons.bookmark_outline),
-            CustomAppBar(rightIcon: Ionicons.person_circle, noBackNavigation: true),
-            const Padding(
+          children: const [
+            Padding(
               padding: EdgeInsets.all(8),
               child: Text(
                 'Página de Configurações',

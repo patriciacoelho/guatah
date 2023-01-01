@@ -20,9 +20,16 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
         padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomAppBar(rightIcon: Ionicons.person_circle, noBackNavigation: true),
-            const Padding(
+          children: const [
+            CustomAppBar(
+              noBackNavigation: true,
+              rightWidget: Icon(
+                Ionicons.person_circle,
+                color: primaryColor,
+                size: 48.0,
+              ),
+            ),
+            Padding(
               padding: EdgeInsets.all(8),
               child: Text(
                 'Encontre viagens por intervalo de data',

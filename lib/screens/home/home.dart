@@ -199,8 +199,12 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const CustomAppBar(
-                    rightIcon: Ionicons.person_circle,
                     noBackNavigation: true,
+                    rightWidget: Icon(
+                      Ionicons.person_circle,
+                      color: primaryColor,
+                      size: 48.0,
+                    ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(8),
