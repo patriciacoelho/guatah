@@ -65,7 +65,10 @@ class _DetailsPageState extends State<DetailsPage> {
   getSuggestionsData() async {
     List<Itinerary>? itinerariesByCategory = await RemoteService().getItineraries({ 'categories': itinerary!.trip_categories, 'take': '3' });
     if (itinerariesByCategory != null) {
-      itinerariesSuggestions = itinerariesByCategory.where((item) => item.id != itinerary!.id).toList().sublist(0, 2);
+      itinerariesSuggestions = itinerariesByCategory.where((item) => item.id != itinerary!.id).toList();
+      if (itinerariesByCategory.length > 2) {
+        itinerariesSuggestions = itinerariesSuggestions?.sublist(0, 2);
+      }
       log("debug message (suggestions)", error: itinerariesSuggestions);
       setState(() {
         loadingItinerariesSuggestionsData = false;
@@ -149,8 +152,8 @@ class _DetailsPageState extends State<DetailsPage> {
                 left: 0,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: const CustomAppBar(
-                    rightWidget: TripTagDialog(),
+                  child: CustomAppBar(
+                    rightWidget: !loadingData ? TripTagDialog(itinerary_id: itinerary!.id, trip_id: itinerary!.trip_id) : Container(),
                     color: Colors.white,
                   ),
                 ),

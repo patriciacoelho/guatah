@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(right: 8.0),
           child: HighlightCardItem(
             id: trips[i].id,
+            trip_id: trips[i].trip_id,
             title: trips[i].trip_name,
             subtitle: trips[i].operator_name,
             date: trips[i].date,

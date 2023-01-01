@@ -6,12 +6,13 @@ import 'package:ionicons/ionicons.dart';
 
 class HighlightCardItem extends StatelessWidget {
   final String id;
+  final String trip_id;
   final String title;
   final String? subtitle;
   final String? date;
   final String? imageUrl;
 
-  const HighlightCardItem({ super.key, required this.title, this.imageUrl, required this.id, this.subtitle, this.date });
+  const HighlightCardItem({ super.key, required this.title, this.imageUrl, required this.id, this.subtitle, this.date, required this.trip_id });
   
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,10 @@ class HighlightCardItem extends StatelessWidget {
                       ) : null,
                     ),
                   ),
-                  const Positioned(
+                  Positioned(
                     top: 16,
                     right: 12,
-                    child: TripTagDialog(small: true),
+                    child: TripTagDialog(small: true, itinerary_id: id, trip_id: trip_id),
                   ),
                   Positioned(
                     bottom: -2,
