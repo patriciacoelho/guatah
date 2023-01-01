@@ -29,6 +29,8 @@ class _DetailsPageState extends State<DetailsPage> {
   bool loadingOperatorsData = true;
   bool loadingItinerariesSuggestionsData = true;
 
+  bool descriptionCollapsed = true;
+
   @override
   void initState() {
     super.initState();
@@ -118,227 +120,259 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            child: Container(
-              width: double.maxFinite,
-              height: 180,
-              decoration: itinerary !=  null ? BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(itinerary!.image_url),
-                  fit: BoxFit.cover,
-                ),
-              ) : null,
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).viewPadding.top,
-            right: 0,
-            left: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: const CustomAppBar(
-                rightIcon: Ionicons.bookmark_outline,
-                rightCallback: null,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 160,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              // height: double.maxFinite,
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24),
-                  topRight: Radius.circular(24),
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.maxFinite,
+          height: descriptionCollapsed ? 1000 : 1080,
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.maxFinite,
+                  height: 180,
+                  decoration: itinerary !=  null ? BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(itinerary!.image_url),
+                      fit: BoxFit.cover,
+                    ),
+                  ) : null,
                 ),
               ),
-              child: itinerary !=  null ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          itinerary!.trip_name,
-                          style: const TextStyle(
-                            color: primaryColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          itinerary!.classification.toUpperCase(),
-                          style: const TextStyle(
-                            color: mediumGreyColor,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 24.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                itinerary!.description ?? '',
-                                style: const TextStyle(
-                                  color: textColor,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: primaryColor),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Ionicons.timer_outline,
-                                    color: primaryColor,
-                                    size: 30,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Text(
-                                      itinerary!.classification,
-                                      style: const TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ]
-                              ),
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Ionicons.bus_outline,
-                                    color: primaryColor,
-                                    size: 30,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Text(
-                                      itinerary!.operator_name,
-                                      style: const TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ]
-                              ),
-                              Column(
-                                children: [
-                                  const Icon(
-                                    Ionicons.calendar_outline,
-                                    color: primaryColor,
-                                    size: 30,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Text(
-                                      itinerary!.date,
-                                      style: const TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(top: 24, bottom: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Próximos destinos',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories })),
-                                    );
-                                },
-                                child: const Text(
-                                  'Ver mais',
-                                  style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: mediumGreyColor,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: !loadingItinerariesSuggestionsData ?
-                            getSuggestionListWidget()
-                            : const Text('Nenhuma sugestão de viagem'),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(top: 24, bottom: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Outras empresas',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: !loadingOperatorsData ?
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: 140.0,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: [getOperatorsList()],
-                              ),
-                            )
-                            : const Text('Nenhuma empresa encontrada'),
-                        ),
-                      ]
+              Positioned(
+                top: MediaQuery.of(context).viewPadding.top,
+                right: 0,
+                left: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const CustomAppBar(
+                    rightIcon: Ionicons.bookmark_outline,
+                    rightCallback: null,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 160,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(24),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
                     ),
                   ),
-                ],
-              ) : null,
-            ),
+                  child: itinerary !=  null ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              itinerary!.trip_name,
+                              style: const TextStyle(
+                                color: primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              itinerary!.classification.toUpperCase(),
+                              style: const TextStyle(
+                                color: mediumGreyColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                              height: descriptionCollapsed ? 190.0 : 245.0,
+                              child: Column(
+                                children: [
+                                  Flexible(
+                                    child: SizedBox(
+                                      height: descriptionCollapsed ? 180.0 : 245.0,
+                                      child: SingleChildScrollView(
+                                        physics: descriptionCollapsed ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                                        child: Text(
+                                          itinerary!.description ?? '',
+                                          overflow: descriptionCollapsed ? TextOverflow.ellipsis : null,
+                                          maxLines: descriptionCollapsed ? 7 : null,
+                                          style: const TextStyle(
+                                            color: textColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  descriptionCollapsed ? InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        descriptionCollapsed = false;
+                                      });
+                                    },
+                                    child: const Text(
+                                      'continuar lendo',
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: mediumGreyColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ) : Container(),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: primaryColor),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      const Icon(
+                                        Ionicons.timer_outline,
+                                        color: primaryColor,
+                                        size: 30,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.only(top: 4.0),
+                                        child: Text(
+                                          itinerary!.classification,
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ]
+                                  ),
+                                  Column(
+                                    children: [
+                                      const Icon(
+                                        Ionicons.bus_outline,
+                                        color: primaryColor,
+                                        size: 30,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.only(top: 4.0),
+                                        child: Text(
+                                          itinerary!.operator_name,
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ]
+                                  ),
+                                  Column(
+                                    children: [
+                                      const Icon(
+                                        Ionicons.calendar_outline,
+                                        color: primaryColor,
+                                        size: 30,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.only(top: 4.0),
+                                        child: Text(
+                                          itinerary!.date,
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ]
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 24, bottom: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Próximos destinos',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories })),
+                                        );
+                                    },
+                                    child: const Text(
+                                      'Ver mais',
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: mediumGreyColor,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: !loadingItinerariesSuggestionsData ?
+                                getSuggestionListWidget()
+                                : const Text('Nenhuma sugestão de viagem'),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 24, bottom: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    'Outras empresas',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: !loadingOperatorsData ?
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 140.0,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [getOperatorsList()],
+                                  ),
+                                )
+                                : const Text('Nenhuma empresa encontrada'),
+                            ),
+                          ]
+                        ),
+                      ),
+                    ],
+                  ) : null,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
