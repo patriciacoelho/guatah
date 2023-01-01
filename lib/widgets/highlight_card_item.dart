@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
 import 'package:guatah/screens/details/details.dart';
+import 'package:guatah/widgets/trip_tag_dialog.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HighlightCardItem extends StatelessWidget {
@@ -54,11 +55,7 @@ class HighlightCardItem extends StatelessWidget {
                   const Positioned(
                     top: 16,
                     right: 12,
-                    child: Icon(
-                      Ionicons.bookmark_outline,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    child: TripTagDialog(small: true),
                   ),
                   Positioned(
                     bottom: -2,

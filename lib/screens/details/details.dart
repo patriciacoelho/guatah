@@ -9,6 +9,7 @@ import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
+import 'package:guatah/widgets/trip_tag_dialog.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -149,8 +150,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: const CustomAppBar(
-                    rightIcon: Ionicons.bookmark_outline,
-                    rightCallback: null,
+                    rightWidget: TripTagDialog(),
                     color: Colors.white,
                   ),
                 ),
