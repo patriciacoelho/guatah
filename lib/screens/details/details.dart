@@ -51,8 +51,9 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   getOperatorsData() async {
-    operators = await RemoteService().getOperators({ 'pickup_id': itinerary!.pickup_city_ids[0] });
-    if (operators != null) {
+    List<Operator>? allOperators = await RemoteService().getOperators({ 'pickup_id': itinerary!.pickup_city_ids[0] });
+    if (allOperators != null) {
+      operators = allOperators.where((operator) => operator.id != itinerary!.operator_id).toList();
       log("debug message (operators)", error: operators);
       setState(() {
         loadingOperatorsData = false;
@@ -61,8 +62,9 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   getSuggestionsData() async {
-    itinerariesSuggestions = await RemoteService().getItineraries({ 'categories': itinerary!.trip_categories, 'take': '2' });
-    if (itinerariesSuggestions != null) {
+    List<Itinerary>? itinerariesByCategory = await RemoteService().getItineraries({ 'categories': itinerary!.trip_categories, 'take': '3' });
+    if (itinerariesByCategory != null) {
+      itinerariesSuggestions = itinerariesByCategory.where((item) => item.id != itinerary!.id).toList().sublist(0, 2);
       log("debug message (suggestions)", error: itinerariesSuggestions);
       setState(() {
         loadingItinerariesSuggestionsData = false;
@@ -304,7 +306,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const Text(
-                                    'Próximos destinos',
+                                    'Outros roteiros sugeridos',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -342,7 +344,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: const [
                                   Text(
-                                    'Outras empresas',
+                                    'Outras empresas na região',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
