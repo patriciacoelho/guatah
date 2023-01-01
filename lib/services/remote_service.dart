@@ -92,5 +92,31 @@ class RemoteService {
     return null;
   }
 
+  dynamic createTagged(Map<String, dynamic>? payload) async {
+    const userId = '632c33609cd2d2830bde5c0b';
+    var client = http.Client();
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+
+    var uri = Uri.parse('$apiBaseUrl/taggeds');
+    var response = await client.post(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String?>{
+        'user_id': userId,
+        'already_know': payload!['trip_id'] != null ? 'true' : 'false',
+        'trip_id': payload['trip_id'],
+        'itinerary_id': payload['itinerary_id'],
+      }),
+    );
+
+  if (response.statusCode == 201 || response.statusCode == 200) {
+    return 'Roteiro marcado com sucesso!';
+  } else {
+    throw Exception('Failed to create album.');
+  }
+}
+
   // Future<List<City>?> getCities() async {}
 }
