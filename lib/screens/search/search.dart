@@ -28,8 +28,20 @@ class _SearchPageState extends State<SearchPage> {
     Option(text: 'Essa semana', value: 'current-week'),
   ];
 
+  List<DropdownMenuItem<String>> get cityOptions {
+    List<DropdownMenuItem<String>> items = [
+      const DropdownMenuItem(value: '632d80c9347f86f2cba02e1e', child: Text('João Pessoa/PB')),
+      const DropdownMenuItem(value: '632d80dc347f86f2cba02e1f', child: Text('Campina Grande/PB')),
+      const DropdownMenuItem(value: '632d80f0347f86f2cba02e20', child: Text('Petrolina/PE')),
+      const DropdownMenuItem(value: '632d8102347f86f2cba02e21', child: Text('Juazeiro/BA')),
+    ];
+
+    return items;
+  }
+
   Option? _durationSelected;
   Option? _intervalSelected;
+  String? _citySelected;
 
   @override
   void initState() {
@@ -54,10 +66,17 @@ class _SearchPageState extends State<SearchPage> {
             const CustomAppBar(pageTitle: 'Busca'),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: const CustomSelectInput(
+              child: CustomSelectInput(
                 labelText: 'Cidade',
+                items: cityOptions,
                 hintText: 'Selecionar cidade',
                 prefixIcon: Ionicons.location,
+                onChanged: (value) {
+                  log('city value: $value');
+                  setState(() {
+                    _citySelected = value.toString();
+                  });
+                },
               ),
             ),
             Container(
@@ -124,11 +143,13 @@ class _SearchPageState extends State<SearchPage> {
                   'start_date': "${today.year.toString()}-${today.month.toString().padLeft(2,'0')}-${today.day.toString().padLeft(2,'0')}",
                   'end_date': lastday != null ? "${lastday.year.toString()}-${lastday.month.toString().padLeft(2,'0')}-${lastday.day.toString().padLeft(2,'0')}" : null,
                   'classification': _durationSelected?.value,
+                  'pickup_id': _citySelected,
                 };
                 log('search', error: params['search']);
                 log('start_date', error: params['start_date']);
                 log('end_date', error: params['end_date']);
                 log('classification', error: params['classification']);
+                log('pickup_id', error: params['pickup_id']);
 
                 Navigator.push(
                   context,
