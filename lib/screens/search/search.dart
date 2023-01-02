@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Container(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -87,19 +87,15 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: CustomRadioGroup(
-                labelText: 'Duração',
-                items: _durationOptions,
-                onChanged: (value) {
-                  setState(() {
-                    _durationSelected = value;
-                  });
-                },
-              ),
+            CustomRadioGroup(
+              labelText: 'Duração',
+              items: _durationOptions,
+              onChanged: (value) {
+                setState(() {
+                  _durationSelected = value;
+                });
+              },
             ),
-            Text(_durationSelected?.value ?? (_durationSelected?.text ?? '')),
           ],
         ),
       ),
@@ -107,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 32.0),
+            padding: const EdgeInsets.only(bottom: 32.0),
             child: ElevatedButton(
               onPressed: () {
                 final today = DateTime.now();
