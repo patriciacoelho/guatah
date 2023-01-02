@@ -6,8 +6,10 @@ class CustomSelectInput extends StatelessWidget {
   final IconData? prefixIcon;
   final String? hintText;
   final String? labelText;
+  final void Function(Object?)? onChanged;
+  final List<DropdownMenuItem<Object?>>? items;
 
-  const CustomSelectInput({ super.key, this.hintText = '', this.labelText, this.prefixIcon });
+  const CustomSelectInput({ super.key, this.hintText = '', this.labelText, this.prefixIcon, this.onChanged, this.items });
 
   Widget get _label {
     return Row(
@@ -34,8 +36,8 @@ class CustomSelectInput extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           child: DropdownButtonFormField(
-            items: [],
-            onChanged: (value) {},
+            items: items,
+            onChanged: (value) => onChanged!(value),
             icon: Container(),
             decoration: InputDecoration(
               isDense: true,
