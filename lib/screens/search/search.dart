@@ -19,8 +19,8 @@ class _SearchPageState extends State<SearchPage> {
 
   final List<Option> _durationOptions = [
     Option(text: '1 dia', value: 'bate-volta'),
-    Option(text: '2 dias', value: 'fim-de-semana'),
-    Option(text: '+3 dias', value: 'ferias'),
+    Option(text: '2 dias', value: 'final de semana'),
+    Option(text: '+3 dias', value: 'viagem'),
   ];
 
   final List<Option> _intervalOptions = [
@@ -123,10 +123,12 @@ class _SearchPageState extends State<SearchPage> {
                   'search': searchController.text,
                   'start_date': "${today.year.toString()}-${today.month.toString().padLeft(2,'0')}-${today.day.toString().padLeft(2,'0')}",
                   'end_date': lastday != null ? "${lastday.year.toString()}-${lastday.month.toString().padLeft(2,'0')}-${lastday.day.toString().padLeft(2,'0')}" : null,
+                  'classification': _durationSelected?.value,
                 };
                 log('search', error: params['search']);
                 log('start_date', error: params['start_date']);
                 log('end_date', error: params['end_date']);
+                log('classification', error: params['classification']);
 
                 Navigator.push(
                   context,
