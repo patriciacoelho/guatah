@@ -8,8 +8,9 @@ class CustomInput extends StatelessWidget {
   final bool searchType;
   final String? hintText;
   final String? labelText;
+  final TextEditingController? controller;
 
-  const CustomInput({ super.key,  this.searchType = false, this.hintText = '', this.labelText });
+  const CustomInput({ super.key,  this.searchType = false, this.hintText = '', this.labelText, this.controller });
 
   Widget get _label {
     return Row(
@@ -37,6 +38,7 @@ class CustomInput extends StatelessWidget {
           ),
           padding: const EdgeInsets.only(right: 12),
           child: TextField(
+            controller: controller,
             onSubmitted: (value) {
               Navigator.push(
                 context,
