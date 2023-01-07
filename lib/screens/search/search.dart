@@ -196,6 +196,13 @@ class _SearchPageState extends State<SearchPage> {
                   lastday = null;
                 }
 
+                final filters = {
+                  'search': searchController.text,
+                  'interval': _intervalSelected?.text,
+                  'classification': _durationSelected?.text,
+                  'operator': operators != null && _operatorSelected != null ? operators?.firstWhere((operator) => operator.id == _operatorSelected).name : null,
+                  'pickup_city': cities?.firstWhere((operator) => operator.id == _citySelected).name,
+                };
                 final params = {
                   'search': searchController.text,
                   'start_date': "${today.year.toString()}-${today.month.toString().padLeft(2,'0')}-${today.day.toString().padLeft(2,'0')}",
@@ -213,7 +220,7 @@ class _SearchPageState extends State<SearchPage> {
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ResultsPage(params: params)),
+                  MaterialPageRoute(builder: (context) => ResultsPage(params: params, filters: filters)),
                 );
               },
               style: ElevatedButton.styleFrom(
