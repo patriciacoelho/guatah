@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
+import 'package:guatah/models/city.dart';
 import 'package:guatah/screens/results/results.dart';
+import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_input.dart';
 import 'package:guatah/widgets/custom_radio_group.dart';
@@ -17,6 +19,9 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final searchController = TextEditingController();
 
+  List<City>? cities;
+  bool loadingCitiesData = true;
+
   final List<Option> _durationOptions = [
     Option(text: '1 dia', value: 'bate-volta'),
     Option(text: '2 dias', value: 'final de semana'),
@@ -28,17 +33,6 @@ class _SearchPageState extends State<SearchPage> {
     Option(text: 'Essa semana', value: 'current-week'),
   ];
 
-  List<DropdownMenuItem<String>> get cityOptions {
-    List<DropdownMenuItem<String>> items = [
-      const DropdownMenuItem(value: '632d80c9347f86f2cba02e1e', child: Text('João Pessoa/PB')),
-      const DropdownMenuItem(value: '632d80dc347f86f2cba02e1f', child: Text('Campina Grande/PB')),
-      const DropdownMenuItem(value: '632d80f0347f86f2cba02e20', child: Text('Petrolina/PE')),
-      const DropdownMenuItem(value: '632d8102347f86f2cba02e21', child: Text('Juazeiro/BA')),
-    ];
-
-    return items;
-  }
-
   Option? _durationSelected;
   Option? _intervalSelected;
   String? _citySelected;
@@ -46,12 +40,38 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    getCitiesData();
   }
 
   @override
   void dispose() {
     searchController.dispose();
     super.dispose();
+  }
+
+  getCitiesData() async {
+    cities = await RemoteService().getCities();
+    if (cities != null) {
+      log("debug message", error: cities);
+      setState(() {
+        loadingCitiesData = false;
+      });
+    }
+  }
+
+  List<DropdownMenuItem<String>> get cityOptions {
+    if (cities != null) {
+      List<DropdownMenuItem<String>> items = [];
+      for(var item in cities!) {
+        items.add(
+          DropdownMenuItem(value: item.id, child: Text('${item.name}/${item.uf}')),
+        );
+      }
+
+      return items;
+    }
+
+    return [];
   }
 
   @override
@@ -68,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
               padding: const EdgeInsets.symmetric(vertical: 16),
               child: CustomSelectInput(
                 labelText: 'Cidade',
-                items: cityOptions,
+                items: !loadingCitiesData ? cityOptions : [],
                 hintText: 'Selecionar cidade',
                 prefixIcon: Ionicons.location,
                 onChanged: (value) {
