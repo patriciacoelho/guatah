@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:convert';
 
 import 'package:guatah/models/category.dart';
+import 'package:guatah/models/city.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/models/operator.dart';
 import 'package:guatah/models/tagged.dart';
@@ -118,5 +119,16 @@ class RemoteService {
   }
 }
 
-  // Future<List<City>?> getCities() async {}
+    Future<List<City>?> getCities() async {
+    var client = http.Client();
+
+    const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
+    var uri = Uri.parse('$apiBaseUrl/cities');
+    var response = await client.get(uri);
+    if (response.statusCode == 200) {
+      var data = response.body;
+      return cityFromJson(data);
+    }
+    return null;
+  }
 }
