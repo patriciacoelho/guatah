@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:guatah/constants/colors.dart';
 import 'package:guatah/models/city.dart';
+import 'package:guatah/models/operator.dart';
 import 'package:guatah/screens/results/results.dart';
 import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
@@ -20,7 +21,9 @@ class _SearchPageState extends State<SearchPage> {
   final searchController = TextEditingController();
 
   List<City>? cities;
+  List<Operator>? operators;
   bool loadingCitiesData = true;
+  bool loadingOperatorsData = true;
 
   final List<Option> _durationOptions = [
     Option(text: '1 dia', value: 'bate-volta'),
@@ -36,6 +39,7 @@ class _SearchPageState extends State<SearchPage> {
   Option? _durationSelected;
   Option? _intervalSelected;
   String? _citySelected;
+  String? _operatorSelected;
 
   @override
   void initState() {
@@ -52,9 +56,19 @@ class _SearchPageState extends State<SearchPage> {
   getCitiesData() async {
     cities = await RemoteService().getCities();
     if (cities != null) {
-      log("debug message", error: cities);
+      log("debug message (cities)", error: cities);
       setState(() {
         loadingCitiesData = false;
+      });
+    }
+  }
+
+  getOperatorsData() async {
+    operators = await RemoteService().getOperators({ 'pickup_id': _citySelected.toString() });
+    if (operators != null) {
+      log("debug message (operators)", error: operators);
+      setState(() {
+        loadingOperatorsData = false;
       });
     }
   }
@@ -65,6 +79,21 @@ class _SearchPageState extends State<SearchPage> {
       for(var item in cities!) {
         items.add(
           DropdownMenuItem(value: item.id, child: Text('${item.name}/${item.uf}')),
+        );
+      }
+
+      return items;
+    }
+
+    return [];
+  }
+
+  List<DropdownMenuItem<String>> get operatorOptions {
+    if (operators != null) {
+      List<DropdownMenuItem<String>> items = [];
+      for(var item in operators!) {
+        items.add(
+          DropdownMenuItem(value: item.id, child: Text(item.name)),
         );
       }
 
@@ -95,7 +124,9 @@ class _SearchPageState extends State<SearchPage> {
                   log('city value: $value');
                   setState(() {
                     _citySelected = value.toString();
+                    _operatorSelected = null;
                   });
+                  getOperatorsData();
                 },
               ),
             ),
@@ -109,9 +140,16 @@ class _SearchPageState extends State<SearchPage> {
             ),
             Container(
               padding: const EdgeInsets.only(bottom: 16),
-              child: const CustomSelectInput(
-                hintText: 'Selecionar empresa',
+              child: CustomSelectInput(
                 labelText: 'Empresa',
+                items: !loadingOperatorsData ? operatorOptions : [],
+                hintText: 'Selecionar empresa',
+                onChanged: (value) {
+                  log('operator value: $value');
+                  setState(() {
+                    _operatorSelected = value.toString();
+                  });
+                },
               ),
             ),
             Container(
@@ -164,12 +202,14 @@ class _SearchPageState extends State<SearchPage> {
                   'end_date': lastday != null ? "${lastday.year.toString()}-${lastday.month.toString().padLeft(2,'0')}-${lastday.day.toString().padLeft(2,'0')}" : null,
                   'classification': _durationSelected?.value,
                   'pickup_id': _citySelected,
+                  'operator_id': _operatorSelected,
                 };
                 log('search', error: params['search']);
                 log('start_date', error: params['start_date']);
                 log('end_date', error: params['end_date']);
                 log('classification', error: params['classification']);
                 log('pickup_id', error: params['pickup_id']);
+                log('operator_id', error: params['operator_id']);
 
                 Navigator.push(
                   context,
