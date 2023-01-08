@@ -18,12 +18,15 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
 
   List<Itinerary>? calendarItems;
   List<Itinerary>? dreamTrips;
+  List<Itinerary>? cheapTrips;
   bool loadingCalendarItems = true;
   bool loadingDreamTrips = true;
+  bool loadingCheapTrips = true;
 
   @override
   void initState() {
     super.initState();
+    getCheapTrips();
     getCalendarItems();
     getDreamTrips();
   }
@@ -48,6 +51,16 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     }
   }
 
+  getCheapTrips() async {
+    cheapTrips = await RemoteService().getItineraries({ 'take': '2', 'asc_order_by': 'price' });
+    if (cheapTrips != null) {
+      log("debug message (cheap trip)", error: cheapTrips);
+      setState(() {
+        loadingCheapTrips = false;
+      });
+    }
+  }
+
   Widget getDreamTripsWidget()
   {
     List<Widget> list = <Widget>[];
@@ -62,6 +75,28 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             secondaryInfo: dreamTrips![i].operator_name,
             extraInfo: '${dreamTrips![i].date} • ${dreamTrips![i].classification}',
             imageUrl: dreamTrips![i].image_url,
+          ),
+        ),
+      );
+    }
+
+    return Column(children: list);
+  }
+
+  Widget getCheapTripsWidget()
+  {
+    List<Widget> list = <Widget>[];
+
+    for (var i = 0; i < cheapTrips!.length; i++) {
+      list.add(
+        Container(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: ListItem(
+            id: cheapTrips![i].id,
+            title: cheapTrips![i].trip_name,
+            secondaryInfo: cheapTrips![i].operator_name,
+            extraInfo: '${cheapTrips![i].date} • ${cheapTrips![i].classification}',
+            imageUrl: cheapTrips![i].image_url,
           ),
         ),
       );
@@ -95,6 +130,34 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Esses cabem no bolso...',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Ver mais',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: !loadingCheapTrips ?
+                      getCheapTripsWidget()
+                      : const Text('Nenhum encontrado'),
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 24, bottom: 16),
