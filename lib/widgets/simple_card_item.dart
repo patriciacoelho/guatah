@@ -34,6 +34,12 @@ class SimpleCardItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
                   imageUrl!,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Image.network(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6bkZX4V5o8QaYeLVo2nYurPqwOS4hDeVytU5BCz7NOPUC9hLp0vZDYIofJzDBpT2XHhc&usqp=CAU',
+                      fit: BoxFit.fill,
+                    );
+                  },
                   fit: BoxFit.fill,
                 ),
               ) : null,
