@@ -37,21 +37,36 @@ class ListItem extends StatelessWidget {
                   imageUrl!,
                   width: 90,
                   height: 90,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Image.network(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6bkZX4V5o8QaYeLVo2nYurPqwOS4hDeVytU5BCz7NOPUC9hLp0vZDYIofJzDBpT2XHhc&usqp=CAU',
+                      fit: BoxFit.fill,
+                    );
+                  },
                   fit: BoxFit.fill,
                 ),
               ) : null,
             ),
             Container(
+              width: MediaQuery.of(context).size.width - 146,
+              height: 90.0,
               padding: const EdgeInsets.only(left: 12, bottom: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: primaryColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                   Text(
@@ -62,7 +77,7 @@ class ListItem extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Icon(
                         Ionicons.calendar_outline,
