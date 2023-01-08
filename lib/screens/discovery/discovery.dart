@@ -5,9 +5,8 @@ import 'package:guatah/constants/colors.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/calendar_list.dart';
-import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/custom_navigation_bar.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:guatah/widgets/list_item.dart';
 
 class DiscoveryPage extends StatefulWidget {
   @override
@@ -18,12 +17,15 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
   var pageIndex = 1;
 
   List<Itinerary>? calendarItems;
+  List<Itinerary>? dreamTrips;
   bool loadingCalendarItems = true;
+  bool loadingDreamTrips = true;
 
   @override
   void initState() {
     super.initState();
     getCalendarItems();
+    getDreamTrips();
   }
 
   getCalendarItems() async {
@@ -36,6 +38,38 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     }
   }
 
+  getDreamTrips() async {
+    dreamTrips = await RemoteService().getItineraries({ 'take': '2', 'desc_order_by': 'price' });
+    if (dreamTrips != null) {
+      log("debug message (dream trip)", error: dreamTrips);
+      setState(() {
+        loadingDreamTrips = false;
+      });
+    }
+  }
+
+  Widget getDreamTripsWidget()
+  {
+    List<Widget> list = <Widget>[];
+
+    for (var i = 0; i < dreamTrips!.length; i++) {
+      list.add(
+        Container(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: ListItem(
+            id: dreamTrips![i].id,
+            title: dreamTrips![i].trip_name,
+            secondaryInfo: dreamTrips![i].operator_name,
+            extraInfo: '${dreamTrips![i].date} • ${dreamTrips![i].classification}',
+            imageUrl: dreamTrips![i].image_url,
+          ),
+        ),
+      );
+    }
+
+    return Column(children: list);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,14 +79,6 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CustomAppBar(
-              noBackNavigation: true,
-              rightWidget: Icon(
-                Ionicons.person_circle,
-                color: primaryColor,
-                size: 48.0,
-              ),
-            ),
             const Padding(
               padding: EdgeInsets.all(8),
               child: Text(
@@ -65,7 +91,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             ),
             Container(
               child: !loadingCalendarItems && calendarItems != null ? CalendarList(items: calendarItems ?? []) : null,
-            )
+            ),
+            Container(
+              child: !loadingDreamTrips ?
+                getDreamTripsWidget()
+                : const Text('Nenhum encontrado'),
+            ),
           ],
         ),
       ),
