@@ -72,30 +72,79 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Container(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - bottomPadding,
+        child: ListView(
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                'Encontre viagens por intervalo de data',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                ),
+            Container(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      'Encontre viagens por intervalo de data',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          '#VemAí, confira o calendário',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20.0,
+                            color: textColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: !loadingCalendarItems && calendarItems != null ? CalendarList(items: calendarItems ?? []) : null,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Viagens dos sonhos',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Ver mais',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: !loadingDreamTrips ?
+                      getDreamTripsWidget()
+                      : const Text('Nenhum encontrado'),
+                  ),
+                ],
               ),
-            ),
-            Container(
-              child: !loadingCalendarItems && calendarItems != null ? CalendarList(items: calendarItems ?? []) : null,
-            ),
-            Container(
-              child: !loadingDreamTrips ?
-                getDreamTripsWidget()
-                : const Text('Nenhum encontrado'),
             ),
           ],
         ),
