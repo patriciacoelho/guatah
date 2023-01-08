@@ -19,9 +19,11 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
   List<Itinerary>? calendarItems;
   List<Itinerary>? dreamTrips;
   List<Itinerary>? cheapTrips;
+  List<Itinerary>? ecotourismTrips;
   bool loadingCalendarItems = true;
   bool loadingDreamTrips = true;
   bool loadingCheapTrips = true;
+  bool loadingEcotourismTrips = true;
 
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
     getCheapTrips();
     getCalendarItems();
     getDreamTrips();
+    getEcotourismTrips();
   }
 
   getCalendarItems() async {
@@ -57,6 +60,16 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
       log("debug message (cheap trip)", error: cheapTrips);
       setState(() {
         loadingCheapTrips = false;
+      });
+    }
+  }
+
+  getEcotourismTrips() async {
+    ecotourismTrips = await RemoteService().getItineraries({ 'take': '2', 'categories': ['6347eb2f7f395d1606e2ccd2'] });
+    if (ecotourismTrips != null) {
+      log("debug message (ecotourism trip)", error: ecotourismTrips);
+      setState(() {
+        loadingEcotourismTrips = false;
       });
     }
   }
@@ -97,6 +110,28 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
             secondaryInfo: cheapTrips![i].operator_name,
             extraInfo: '${cheapTrips![i].date} • ${cheapTrips![i].classification}',
             imageUrl: cheapTrips![i].image_url,
+          ),
+        ),
+      );
+    }
+
+    return Column(children: list);
+  }
+
+  Widget getEcotourismTripsWidget()
+  {
+    List<Widget> list = <Widget>[];
+
+    for (var i = 0; i < ecotourismTrips!.length; i++) {
+      list.add(
+        Container(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: ListItem(
+            id: ecotourismTrips![i].id,
+            title: ecotourismTrips![i].trip_name,
+            secondaryInfo: ecotourismTrips![i].operator_name,
+            extraInfo: '${ecotourismTrips![i].date} • ${ecotourismTrips![i].classification}',
+            imageUrl: ecotourismTrips![i].image_url,
           ),
         ),
       );
@@ -204,6 +239,34 @@ class _DiscoveryPageState extends State<DiscoveryPage> {
                   Container(
                     child: !loadingDreamTrips ?
                       getDreamTripsWidget()
+                      : const Text('Nenhum encontrado'),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Ecoturismo',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Ver mais',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: !loadingEcotourismTrips ?
+                      getEcotourismTripsWidget()
                       : const Text('Nenhum encontrado'),
                   ),
                 ],
