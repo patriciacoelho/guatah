@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:convert';
 
 import 'package:guatah/models/category.dart';
@@ -12,11 +11,9 @@ class RemoteService {
   Future<List<Itinerary>?> getItineraries(Map<String, dynamic>? params) async {
     var client = http.Client();
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
-    log("debug message", error: apiBaseUrl);
 
     String queryString = Uri(queryParameters: params).query;
     var uri = Uri.parse('$apiBaseUrl/itineraries?$queryString');
-    log("debug message", error: uri);
     var response = await client.get(uri);
     if (response.statusCode == 200) {
       var data = response.body;
@@ -79,6 +76,7 @@ class RemoteService {
   }
 
   Future<List<Tagged>?> getTagged(Map<String, dynamic>? params) async {
+    // TODO - utilizar userId do usuário logado
     const userId = '632c33609cd2d2830bde5c0b';
     var client = http.Client();
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
@@ -94,6 +92,7 @@ class RemoteService {
   }
 
   dynamic createTagged(Map<String, dynamic>? payload) async {
+    // TODO - utilizar userId do usuário logado
     const userId = '632c33609cd2d2830bde5c0b';
     var client = http.Client();
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
@@ -112,14 +111,14 @@ class RemoteService {
       }),
     );
 
-  if (response.statusCode == 201 || response.statusCode == 200) {
-    return 'Roteiro marcado com sucesso!';
-  } else {
-    throw Exception('Failed to create album.');
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return 'Roteiro marcado com sucesso!';
+    } else {
+      throw Exception('Falha ao marcar roteiro.');
+    }
   }
-}
 
-    Future<List<City>?> getCities() async {
+  Future<List<City>?> getCities() async {
     var client = http.Client();
 
     const apiBaseUrl = String.fromEnvironment('API_BASE_URL');
