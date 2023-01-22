@@ -16,6 +16,7 @@ import 'package:guatah/widgets/highlight_card_item.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/rounded_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,21 +36,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<Itinerary>? tripItineraries;
   List<Itinerary>? travelItineraries;
   List<Itinerary>? tourItineraries;
-  bool loadingOperatorsData = true;
-  bool loadingItinerariesData = true;
-  bool loadingCategoriesData = true;
-  bool loadingRecommendedItinerariesData = true;
-  bool loadingTripItinerariesData = true;
-  bool loadingTravelItinerariesData = true;
-  bool loadingTourItinerariesData = true;
+  bool loadingOperatorsData = false;
+  bool loadingItinerariesData = false;
+  bool loadingCategoriesData = false;
+  bool loadingRecommendedItinerariesData = false;
+  bool loadingTripItinerariesData = false;
+  bool loadingTravelItinerariesData = false;
+  bool loadingTourItinerariesData = false;
 
   @override
   void initState() {
     super.initState();
     getTripItinerariesData();
-    getOperatorsData();
     getCategoriesData();
     getRecommendedItinerariesData();
+    getOperatorsData();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
@@ -66,6 +67,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   getOperatorsData() async {
+    setState(() {
+      loadingOperatorsData = true;
+    });
     operators = await RemoteService().getOperators({});
     if (operators != null) {
       log("debug message", error: operators);
@@ -76,6 +80,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   getCategoriesData() async {
+    setState(() {
+      loadingCategoriesData = true;
+    });
     categories = await RemoteService().getCategories();
     if (categories != null) {
       log("debug message", error: categories);
@@ -86,6 +93,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   getTripItinerariesData() async {
+    setState(() {
+      loadingTripItinerariesData = true;
+      loadingTravelItinerariesData = true;
+      loadingTourItinerariesData = true;
+    });
     tripItineraries = await RemoteService().getItineraries({ 'take': '2', 'classification': 'bate-volta' });
     if (tripItineraries != null) {
       log("debug message (trip)", error: tripItineraries);
@@ -99,6 +111,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (travelItineraries != null) {
       return;
     }
+    setState(() {
+      loadingTravelItinerariesData = true;
+    });
     travelItineraries = await RemoteService().getItineraries({ 'take': '2', 'classification': 'final de semana' });
     if (travelItineraries != null) {
       log("debug message (travel)", error: travelItineraries);
@@ -135,20 +150,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < tripItineraries!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: tripItineraries![i].id,
-            trip_id: tripItineraries![i].trip_id,
-            title: tripItineraries![i].trip_name,
-            subtitle: tripItineraries![i].operator_name,
-            date: tripItineraries![i].date,
-            imageUrl: tripItineraries![i].image_url,
+    if (tripItineraries != null) {
+      for (var i = 0; i < tripItineraries!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: tripItineraries![i].id,
+              trip_id: tripItineraries![i].trip_id,
+              title: tripItineraries![i].trip_name,
+              subtitle: tripItineraries![i].operator_name,
+              date: tripItineraries![i].date,
+              imageUrl: tripItineraries![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -161,21 +178,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < travelItineraries!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: travelItineraries![i].id,
-            trip_id: travelItineraries![i].trip_id,
-            title: travelItineraries![i].trip_name,
-            subtitle: travelItineraries![i].operator_name,
-            date: travelItineraries![i].date,
-            imageUrl: travelItineraries![i].image_url,
+    if (travelItineraries != null) {
+      for (var i = 0; i < travelItineraries!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: travelItineraries![i].id,
+              trip_id: travelItineraries![i].trip_id,
+              title: travelItineraries![i].trip_name,
+              subtitle: travelItineraries![i].operator_name,
+              date: travelItineraries![i].date,
+              imageUrl: travelItineraries![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
+
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,20 +207,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < tourItineraries!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: tourItineraries![i].id,
-            trip_id: tourItineraries![i].trip_id,
-            title: tourItineraries![i].trip_name,
-            subtitle: tourItineraries![i].operator_name,
-            date: tourItineraries![i].date,
-            imageUrl: tourItineraries![i].image_url,
+    if (tourItineraries != null) {
+      for (var i = 0; i < tourItineraries!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: tourItineraries![i].id,
+              trip_id: tourItineraries![i].trip_id,
+              title: tourItineraries![i].trip_name,
+              subtitle: tourItineraries![i].operator_name,
+              date: tourItineraries![i].date,
+              imageUrl: tourItineraries![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -213,19 +235,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < recommendedItineraries!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: recommendedItineraries![i].id,
-            title: recommendedItineraries![i].trip_name,
-            secondaryInfo: recommendedItineraries![i].operator_name,
-            extraInfo: '${recommendedItineraries![i].date} • ${recommendedItineraries![i].classification}',
-            imageUrl: recommendedItineraries![i].image_url,
+    if (recommendedItineraries != null) {
+      for (var i = 0; i < recommendedItineraries!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: recommendedItineraries![i].id,
+              title: recommendedItineraries![i].trip_name,
+              secondaryInfo: recommendedItineraries![i].operator_name,
+              extraInfo: '${recommendedItineraries![i].date} • ${recommendedItineraries![i].classification}',
+              imageUrl: recommendedItineraries![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
@@ -235,25 +259,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < categories!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: GestureDetector(
-            onTap: () {
-              final categoryId = categories![i].id;
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': [categoryId] })),
-                );
-            },
-            child: RoundedItem(
-              title: categories![i].name,
-              imageUrl: categories![i].image_url,
+    if (categories != null) {
+      for (var i = 0; i < categories!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                final categoryId = categories![i].id;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': [categoryId] })),
+                  );
+              },
+              child: RoundedItem(
+                title: categories![i].name,
+                imageUrl: categories![i].image_url,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -266,17 +292,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < operators!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: SimpleCardItem(
-            id: operators![i].id,
-            title: operators![i].name,
-            imageUrl: operators![i].image_url,
+    if (operators != null) {
+      for (var i = 0; i < operators!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SimpleCardItem(
+              id: operators![i].id,
+              title: operators![i].name,
+              imageUrl: operators![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -323,138 +351,100 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     searchType: true,
                     hintText: 'Buscar lugares',
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TabBar(
-                      labelPadding: const EdgeInsets.only(left: 12, right: 12),
-                      controller: _tabController,
-                      labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                      labelColor: primaryColor,
-                      unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                      unselectedLabelColor: mediumGreyColor,
-                      isScrollable: true,
-                      indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
-                      tabs: const [
-                        Tab(text: 'Bate-volta'),
-                        Tab(text: 'Fim de semana'),
-                        Tab(text: 'Passeios'),
-                      ],
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TabBar(
+                        labelPadding: const EdgeInsets.only(left: 12, right: 12),
+                        controller: _tabController,
+                        labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                        labelColor: primaryColor,
+                        unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                        unselectedLabelColor: mediumGreyColor,
+                        isScrollable: true,
+                        indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
+                        tabs: const [
+                          Tab(text: 'Bate-volta'),
+                          Tab(text: 'Fim de semana'),
+                          Tab(text: 'Passeios'),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(
-                    height: 225,
+                    height: 205,
                     width: double.maxFinite,
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingTripItinerariesData ?
-                            getTripItinerariesListWidget()
-                            : const Text('Nenhum bate-volta'),
+                        WrapperSection(
+                          loading: loadingTripItinerariesData && (tripItineraries == null || tripItineraries!.isEmpty),
+                          isEmpty: tripItineraries == null || tripItineraries!.isEmpty,
+                          fallback: const Text('Nenhum bate-volta encontrado'),
+                          child: SizedBox(
+                            height: 205,
+                            width: double.maxFinite,
+                            child: getTripItinerariesListWidget(),
+                          ),
                         ),
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingTravelItinerariesData ?
-                            getTravelItinerariesWidget()
-                            : const Text('Nenhuma viagem de fim de semana'),
+                        WrapperSection(
+                          loading: loadingTravelItinerariesData && (travelItineraries == null || travelItineraries!.isEmpty),
+                          isEmpty: travelItineraries == null || travelItineraries!.isEmpty,
+                          fallback: const Text('Nenhuma viagem de fim de semana'),
+                          child: SizedBox(
+                            height: 205,
+                            width: double.maxFinite,
+                            child: getTravelItinerariesWidget(),
+                          ),
                         ),
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingTourItinerariesData ?
-                            getTourItinerariesWidget()
-                            : const Text('Nenhum passeio'),
+                        WrapperSection(
+                          loading: loadingTourItinerariesData && (tourItineraries == null || tourItineraries!.isEmpty),
+                          isEmpty: tourItineraries == null || tourItineraries!.isEmpty,
+                          fallback: const Text('Nenhum passeio local encontrado'),
+                          child: SizedBox(
+                            height: 205,
+                            width: double.maxFinite,
+                            child: getTourItinerariesWidget(),
+                          ),
                         ),
                       ],
                     )
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: const Text(
-                      'Categorias',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                  WrapperSection(
+                    title: 'Categorias',
+                    loading: loadingCategoriesData && (categories == null || categories!.isEmpty),
+                    isEmpty: categories == null || categories!.isEmpty,
+                    fallback: const Text('Nenhuma categoria encontrada'),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 80.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [getCategoriesListWidget()],
                       ),
                     ),
                   ),
-                  Container(
-                    child: !loadingCategoriesData ?
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 80.0,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [getCategoriesListWidget()],
-                        ),
-                      )
-                      : const Text('Nenhuma categoria encontrada'),
+                  WrapperSection(
+                    title: 'Recomendados',
+                    loading: loadingRecommendedItinerariesData && (recommendedItineraries == null || recommendedItineraries!.isEmpty),
+                    isEmpty: recommendedItineraries == null || recommendedItineraries!.isEmpty,
+                    fallback: const Text('Nenhuma viagem nos recomendados'),
+                    child: getRecommendedListWidget(),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Recomendados',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Ver mais',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                  WrapperSection(
+                    title: 'Empresas',
+                    loading: loadingOperatorsData && (operators == null || operators!.isEmpty),
+                    isEmpty: operators == null || operators!.isEmpty,
+                    fallback: const Text('Nenhuma empresa encontrada'),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 140.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [getOperatorList()],
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: !loadingRecommendedItinerariesData ?
-                      getRecommendedListWidget()
-                      : const Text('Nenhum recomendado'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Empresas',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Ver mais',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: !loadingOperatorsData ?
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 140.0,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [getOperatorList()],
-                        ),
-                      )
-                      : const Text('Nenhuma empresa encontrada'),
                   ),
                 ],
               ),
