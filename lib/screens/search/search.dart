@@ -13,6 +13,8 @@ import 'package:guatah/widgets/custom_select_input.dart';
 import 'package:ionicons/ionicons.dart';
 
 class SearchPage extends StatefulWidget {
+  const SearchPage({super.key});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }

@@ -9,7 +9,6 @@ import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/rounded_item.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OperatorPage extends StatefulWidget {
@@ -127,156 +126,154 @@ class _OperatorPageState extends State<OperatorPage> {
                   child: operator !=  null ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              operator!.name,
-                              style: const TextStyle(
-                                color: primaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            operator!.name,
+                            style: const TextStyle(
+                              color: primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
                             ),
-                            Text(
-                              operator!.type.toUpperCase(),
-                              style: const TextStyle(
-                                color: mediumGreyColor,
-                                fontSize: 12,
-                              ),
+                          ),
+                          Text(
+                            operator!.type.toUpperCase(),
+                            style: const TextStyle(
+                              color: mediumGreyColor,
+                              fontSize: 12,
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 24.0),
-                              height: descriptionCollapsed ? 190.0 : 245.0,
-                              child: Column(
-                                children: [
-                                  Flexible(
-                                    child: SizedBox(
-                                      height: descriptionCollapsed ? 180.0 : 245.0,
-                                      child: SingleChildScrollView(
-                                        physics: descriptionCollapsed ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
-                                        child: Text(
-                                          operator!.description ?? '',
-                                          overflow: descriptionCollapsed ? TextOverflow.ellipsis : null,
-                                          maxLines: descriptionCollapsed ? 7 : null,
-                                          style: const TextStyle(
-                                            color: textColor,
-                                            fontSize: 12,
-                                          ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            height: descriptionCollapsed ? 190.0 : 245.0,
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  child: SizedBox(
+                                    height: descriptionCollapsed ? 180.0 : 245.0,
+                                    child: SingleChildScrollView(
+                                      physics: descriptionCollapsed ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+                                      child: Text(
+                                        operator!.description ?? '',
+                                        overflow: descriptionCollapsed ? TextOverflow.ellipsis : null,
+                                        maxLines: descriptionCollapsed ? 7 : null,
+                                        style: const TextStyle(
+                                          color: textColor,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  descriptionCollapsed ? InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        descriptionCollapsed = false;
-                                      });
-                                    },
-                                    child: const Text(
-                                      'continuar lendo',
-                                      style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: mediumGreyColor,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ) : Container(),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 24, bottom: 16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'Próximos destinos',
+                                ),
+                                descriptionCollapsed ? InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      descriptionCollapsed = false;
+                                    });
+                                  },
+                                  child: const Text(
+                                    'continuar lendo',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                      color: mediumGreyColor,
+                                      fontWeight: FontWeight.w400,
                                       fontSize: 16,
                                     ),
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ResultsPage(params: { 'operator_id': operator!.id })),
-                                        );
-                                    },
-                                    child: const Text(
-                                      'Ver mais',
-                                      style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: mediumGreyColor,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ) : Container(),
+                              ],
                             ),
-                            Container(
-                              child: !loadingItinerariesData ?
-                                getComingListWidget()
-                                : const Text('Nenhum recomendado'),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 24, bottom: 16),
-                              child: (operator!.instagram != null && operator!.instagram != '')
-                                || (operator!.whatsapp != null && operator!.whatsapp != '')
-                                || (operator!.site != null && operator!.site != '')
-                                ? Text(
-                                  '${operator!.name} nas redes',
-                                  style:  const TextStyle(
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 24, bottom: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Próximos destinos',
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
                                   ),
-                                ) : null,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ResultsPage(params: { 'operator_id': operator!.id })),
+                                      );
+                                  },
+                                  child: const Text(
+                                    'Ver mais',
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: mediumGreyColor,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.only(right: 24.0),
-                                    child: operator!.instagram != null && operator!.instagram != '' ? GestureDetector(
-                                      onTap: () => _launchURL(operator!.instagram ?? ''),
-                                      child: const RoundedItem(
-                                        title: 'Instagram',
-                                        imageUrl: 'http://store-images.s-microsoft.com/image/apps.31997.13510798887167234.6cd52261-a276-49cf-9b6b-9ef8491fb799.30e70ce4-33c5-43d6-9af1-491fe4679377',
-                                      ),
-                                    ) : null,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(right: 24.0),
-                                    child: operator!.whatsapp != null && operator!.whatsapp != '' ? GestureDetector(
-                                      onTap: () => _launchURL(operator!.whatsapp ?? ''),
-                                      child: const RoundedItem(
-                                        title: 'Whatsapp',
-                                        imageUrl: 'http://store-images.s-microsoft.com/image/apps.8985.13655054093851568.1c669dab-3716-40f6-9b59-de7483397c3a.8b1af40f-2a98-4a00-98cd-94e485a04427',
-                                      ),
-                                    ) : null,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(right: 24.0),
-                                    child: operator!.site != null && operator!.site != '' ? GestureDetector(
-                                      onTap: () => _launchURL(operator!.site ?? ''),
-                                      child: const RoundedItem(
-                                        title: 'Site',
-                                        imageUrl: 'https://www.freepnglogos.com/uploads/logo-website-png/logo-website-website-icon-with-png-and-vector-format-for-unlimited-22.png',
-                                      ),
-                                    ) : null,
-                                  ),
-                                ],
-                              ),
+                          ),
+                          Container(
+                            child: !loadingItinerariesData ?
+                              getComingListWidget()
+                              : const Text('Nenhum recomendado'),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 24, bottom: 16),
+                            child: (operator!.instagram != null && operator!.instagram != '')
+                              || (operator!.whatsapp != null && operator!.whatsapp != '')
+                              || (operator!.site != null && operator!.site != '')
+                              ? Text(
+                                '${operator!.name} nas redes',
+                                style:  const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ) : null,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(right: 24.0),
+                                  child: operator!.instagram != null && operator!.instagram != '' ? GestureDetector(
+                                    onTap: () => _launchURL(operator!.instagram ?? ''),
+                                    child: const RoundedItem(
+                                      title: 'Instagram',
+                                      imageUrl: 'http://store-images.s-microsoft.com/image/apps.31997.13510798887167234.6cd52261-a276-49cf-9b6b-9ef8491fb799.30e70ce4-33c5-43d6-9af1-491fe4679377',
+                                    ),
+                                  ) : null,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(right: 24.0),
+                                  child: operator!.whatsapp != null && operator!.whatsapp != '' ? GestureDetector(
+                                    onTap: () => _launchURL(operator!.whatsapp ?? ''),
+                                    child: const RoundedItem(
+                                      title: 'Whatsapp',
+                                      imageUrl: 'http://store-images.s-microsoft.com/image/apps.8985.13655054093851568.1c669dab-3716-40f6-9b59-de7483397c3a.8b1af40f-2a98-4a00-98cd-94e485a04427',
+                                    ),
+                                  ) : null,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(right: 24.0),
+                                  child: operator!.site != null && operator!.site != '' ? GestureDetector(
+                                    onTap: () => _launchURL(operator!.site ?? ''),
+                                    child: const RoundedItem(
+                                      title: 'Site',
+                                      imageUrl: 'https://www.freepnglogos.com/uploads/logo-website-png/logo-website-website-icon-with-png-and-vector-format-for-unlimited-22.png',
+                                    ),
+                                  ) : null,
+                                ),
+                              ],
                             ),
-                          ]
-                        ),
+                          ),
+                        ]
                       ),
                     ],
                   ) : null,

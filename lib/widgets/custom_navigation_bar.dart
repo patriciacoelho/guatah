@@ -25,9 +25,9 @@ class CustomNavigationBar extends StatelessWidget {
       onTap: (value) {
         pageIndex = value;
         var pages = [
-          HomePage(),
-          DiscoveryPage(),
-          TaggedsPage(),
+          const HomePage(),
+          const DiscoveryPage(),
+          const TaggedsPage(),
           SettingsPage()
         ];
         Navigator.push(
@@ -85,11 +85,9 @@ class BottomNavigationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Icon(
-        icon,
-        color: isActive ? primaryColor : Colors.black,
-      )
+    return Icon(
+      icon,
+      color: isActive ? primaryColor : Colors.black,
     );
   }
 }

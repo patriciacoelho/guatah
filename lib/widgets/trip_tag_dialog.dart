@@ -19,7 +19,7 @@ class TripTagDialog extends StatelessWidget {
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Já conhece ou deseja conhecer esse roteiro?'),
-          content: Container(
+          content: SizedBox(
             height: 108,
             child: Column(
               children: [

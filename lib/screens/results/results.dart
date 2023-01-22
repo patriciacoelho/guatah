@@ -174,7 +174,7 @@ class _ResultsPageState extends State<ResultsPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       body: Container(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

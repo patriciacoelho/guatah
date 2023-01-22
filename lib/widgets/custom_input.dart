@@ -42,7 +42,7 @@ class CustomInput extends StatelessWidget {
             onSubmitted: (value) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ResultsPage()),
+                MaterialPageRoute(builder: (context) => const ResultsPage()),
               );
             },
             decoration: InputDecoration(
@@ -70,7 +70,7 @@ class CustomInput extends StatelessWidget {
               suffixIcon: searchType ? IconButton(
                 // padding: EdgeInsets.all(10),
                 icon: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   decoration: const BoxDecoration(
                     border: Border(
                       left: BorderSide(
@@ -87,7 +87,7 @@ class CustomInput extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SearchPage()),
+                    MaterialPageRoute(builder: (context) => const SearchPage()),
                   );
                 },
               ) : null,

@@ -19,6 +19,8 @@ import 'package:guatah/widgets/simple_card_item.dart';
 import 'package:ionicons/ionicons.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -321,25 +323,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     searchType: true,
                     hintText: 'Buscar lugares',
                   ),
-                  Container(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TabBar(
-                        labelPadding: const EdgeInsets.only(left: 12, right: 12),
-                        controller: _tabController,
-                        labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                        labelColor: primaryColor,
-                        unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                        unselectedLabelColor: mediumGreyColor,
-                        isScrollable: true,
-                        indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
-                        tabs: const [
-                          Tab(text: 'Bate-volta'),
-                          Tab(text: 'Fim de semana'),
-                          Tab(text: 'Passeios'),
-                        ],
-                      ),
-                    )
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      labelPadding: const EdgeInsets.only(left: 12, right: 12),
+                      controller: _tabController,
+                      labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                      labelColor: primaryColor,
+                      unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                      unselectedLabelColor: mediumGreyColor,
+                      isScrollable: true,
+                      indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
+                      tabs: const [
+                        Tab(text: 'Bate-volta'),
+                        Tab(text: 'Fim de semana'),
+                        Tab(text: 'Passeios'),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 225,

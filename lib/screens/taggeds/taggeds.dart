@@ -10,6 +10,8 @@ import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
 
 class TaggedsPage extends StatefulWidget {
+  const TaggedsPage({super.key});
+
   @override
   _TaggedsPageState createState() => _TaggedsPageState();
 }
@@ -120,24 +122,22 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            Container(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: TabBar(
-                  labelPadding: const EdgeInsets.only(left: 12, right: 12),
-                  controller: _tabController,
-                  labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                  labelColor: primaryColor,
-                  unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                  unselectedLabelColor: mediumGreyColor,
-                  isScrollable: true,
-                  indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
-                  tabs: const [
-                    Tab(text: 'Quero conhecer'),
-                    Tab(text: 'Lugares que já conheci'),
-                  ],
-                ),
-              )
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TabBar(
+                labelPadding: const EdgeInsets.only(left: 12, right: 12),
+                controller: _tabController,
+                labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                labelColor: primaryColor,
+                unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                unselectedLabelColor: mediumGreyColor,
+                isScrollable: true,
+                indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
+                tabs: const [
+                  Tab(text: 'Quero conhecer'),
+                  Tab(text: 'Lugares que já conheci'),
+                ],
+              ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height - 202.0,

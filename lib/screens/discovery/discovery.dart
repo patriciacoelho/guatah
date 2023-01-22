@@ -11,6 +11,8 @@ import 'package:guatah/widgets/highlight_card_item.dart';
 import 'package:guatah/widgets/list_item.dart';
 
 class DiscoveryPage extends StatefulWidget {
+  const DiscoveryPage({super.key});
+
   @override
   _DiscoveryPageState createState() => _DiscoveryPageState();
 }
@@ -332,25 +334,23 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
                       getCheapTripsWidget()
                       : const Text('Nenhum encontrado'),
                   ),
-                  Container(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: TabBar(
-                        labelPadding: const EdgeInsets.only(left: 12, right: 12),
-                        controller: _tabController,
-                        labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                        labelColor: primaryColor,
-                        unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
-                        unselectedLabelColor: mediumGreyColor,
-                        isScrollable: true,
-                        indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
-                        tabs: const [
-                          Tab(text: 'Especiais'),
-                          Tab(text: 'Experiências'),
-                          Tab(text: '#Festas'),
-                        ],
-                      ),
-                    )
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      labelPadding: const EdgeInsets.only(left: 12, right: 12),
+                      controller: _tabController,
+                      labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                      labelColor: primaryColor,
+                      unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+                      unselectedLabelColor: mediumGreyColor,
+                      isScrollable: true,
+                      indicator: DashedTabIndicator(color: primaryColor, stroke: 3.0),
+                      tabs: const [
+                        Tab(text: 'Especiais'),
+                        Tab(text: 'Experiências'),
+                        Tab(text: '#Festas'),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 225,

@@ -45,7 +45,6 @@ class _CustomRadioGroupState extends State<CustomRadioGroup> {
           _selected = isSelected ? index : -1;
         });
       },
-      child: Text(text),
       style: OutlinedButton.styleFrom(
         shape: const StadiumBorder(),
         textStyle: TextStyle(
@@ -59,6 +58,7 @@ class _CustomRadioGroupState extends State<CustomRadioGroup> {
           color: index == _selected ? primaryColor : const Color(0xFF777777),
         ),
       ),
+      child: Text(text),
     );
   }
 

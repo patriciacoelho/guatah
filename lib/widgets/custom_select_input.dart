@@ -52,21 +52,19 @@ class CustomSelectInput extends StatelessWidget {
               ),
               border: InputBorder.none,
               prefixIcon: prefixIcon != null ? IconButton(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10.0),
                 icon: Icon(
                   prefixIcon,
-                  color: Color(0xFF777777),
+                  color: mediumGreyColor,
                   size: 24,
                 ),
                 onPressed: null,
               ) : null,
-              suffixIcon: IconButton(
-                icon: Container(
-                  child: const Icon(
-                    Ionicons.chevron_down,
-                    color: primaryColor,
-                    size: 20,
-                  ),
+              suffixIcon: const IconButton(
+                icon: Icon(
+                  Ionicons.chevron_down,
+                  color: primaryColor,
+                  size: 20,
                 ),
                 onPressed: null,
               ),
