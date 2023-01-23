@@ -8,6 +8,7 @@ import 'package:guatah/widgets/custom_navigation_bar.dart';
 import 'package:guatah/widgets/dash_tab_indicator.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 
 class TaggedsPage extends StatefulWidget {
   const TaggedsPage({super.key});
@@ -20,7 +21,7 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
   var pageIndex = 2;
   List<Tagged>? taggedList;
   List<Tagged>? taggedPinupList;
-  bool loadingTaggedData = true;
+  bool loadingTaggedData = false;
   bool loadingTaggedPinupData = true;
 
   late TabController _tabController;
@@ -52,6 +53,9 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
   }
 
   getTaggedData() async {
+    setState(() {
+      loadingTaggedData = true;
+    });
     taggedList = await RemoteService().getTagged({});
     if (taggedList != null) {
       log("debug message", error: taggedList);
@@ -65,17 +69,19 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < taggedList!.length; i++) {
-      if (taggedList![i].itineraryId != null) {
-        list.add(
-          ListItem(
-            id: taggedList![i].itineraryId ?? '',
-            title: taggedList![i].trip_name,
-            secondaryInfo: taggedList![i].operator_name,
-            extraInfo: '${taggedList![i].date} • ${taggedList![i].classification}',
-            imageUrl: taggedList![i].image_url,
-          ),
-        );
+    if (taggedList != null) {
+      for (var i = 0; i < taggedList!.length; i++) {
+        if (taggedList![i].itineraryId != null) {
+          list.add(
+            ListItem(
+              id: taggedList![i].itineraryId ?? '',
+              title: taggedList![i].trip_name,
+              secondaryInfo: taggedList![i].operator_name,
+              extraInfo: '${taggedList![i].date} • ${taggedList![i].classification}',
+              imageUrl: taggedList![i].image_url,
+            ),
+          );
+        }
       }
     }
 
@@ -86,16 +92,18 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < taggedPinupList!.length; i++) {
-      if (taggedPinupList![i].tripId != null) {
-        list.add(
-          SimpleCardItem(
-            id: taggedPinupList![i].tripId ?? '',
-            title: taggedPinupList![i].trip_name,
-            imageUrl: taggedPinupList![i].image_url,
-            large: true,
-          ),
-        );
+    if (taggedPinupList != null) {
+      for (var i = 0; i < taggedPinupList!.length; i++) {
+        if (taggedPinupList![i].tripId != null) {
+          list.add(
+            SimpleCardItem(
+              id: taggedPinupList![i].tripId ?? '',
+              title: taggedPinupList![i].trip_name,
+              imageUrl: taggedPinupList![i].image_url,
+              large: true,
+            ),
+          );
+        }
       }
     }
 
@@ -145,19 +153,29 @@ class _TaggedsPageState extends State<TaggedsPage> with TickerProviderStateMixin
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SizedBox(
-                    height: double.maxFinite,
-                    width: double.maxFinite,
-                    child: !loadingTaggedData ?
-                      ListView(children: [getTaggedWishListWidget()])
-                      : const Text('Nenhum item marcado'),
+                  WrapperSection(
+                    loading: loadingTaggedData && (taggedList == null || taggedList!.isEmpty),
+                    isEmpty: taggedList == null || taggedList!.isEmpty,
+                    fallback: const Text('Nenhum item marcado'),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 202.0,
+                      width: double.maxFinite,
+                      child: ListView(
+                        children: [getTaggedWishListWidget()],
+                      ),
+                    ),
                   ),
-                  SizedBox(
-                    height: double.maxFinite,
-                    width: double.maxFinite,
-                    child: !loadingTaggedPinupData ?
-                      ListView(children: [getTaggedPinupListWidget()])
-                      : const Text('Nenhum item marcado'),
+                  WrapperSection(
+                    loading: loadingTaggedPinupData && (taggedPinupList == null || taggedPinupList!.isEmpty),
+                    isEmpty: taggedPinupList == null || taggedPinupList!.isEmpty,
+                    fallback: const Text('Nenhum item marcado'),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 202.0,
+                      width: double.maxFinite,
+                      child: ListView(
+                        children: [getTaggedPinupListWidget()],
+                      ),
+                    ),
                   ),
                 ],
               )
