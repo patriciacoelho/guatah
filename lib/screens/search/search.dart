@@ -24,7 +24,7 @@ class _SearchPageState extends State<SearchPage> {
 
   List<City>? cities;
   List<Operator>? operators;
-  bool loadingCitiesData = true;
+  bool loadingCitiesData = false;
   bool loadingOperatorsData = true;
 
   final List<Option> _durationOptions = [
@@ -56,6 +56,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   getCitiesData() async {
+    setState(() {
+      loadingCitiesData = true;
+    });
     cities = await RemoteService().getCities();
     if (cities != null) {
       log("debug message (cities)", error: cities);
