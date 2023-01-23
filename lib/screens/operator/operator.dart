@@ -9,6 +9,7 @@ import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/rounded_item.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OperatorPage extends StatefulWidget {
@@ -23,8 +24,8 @@ class OperatorPage extends StatefulWidget {
 class _OperatorPageState extends State<OperatorPage> {
   Operator? operator;
   List<Itinerary>? itineraries;
-  bool loadingOperatorData = true;
-  bool loadingItinerariesData = true;
+  bool loadingOperatorData = false;
+  bool loadingItinerariesData = false;
   bool descriptionCollapsed = true;
 
   @override
@@ -34,7 +35,9 @@ class _OperatorPageState extends State<OperatorPage> {
   }
 
   getOperatorData() async {
-    log('operator id: ', error: widget.id);
+    setState(() {
+      loadingOperatorData = true;
+    });
     operator = await RemoteService().getOperator(id: widget.id);
     if (operator != null) {
       log("debug message (operator)", error: operator!.name);
@@ -46,6 +49,9 @@ class _OperatorPageState extends State<OperatorPage> {
   }
 
   getItinerariesData() async {
+    setState(() {
+      loadingItinerariesData = true;
+    });
     itineraries = await RemoteService().getItineraries({ 'operator_id': operator!.id, 'take': '3' });
     if (itineraries != null) {
       setState(() {
@@ -58,19 +64,21 @@ class _OperatorPageState extends State<OperatorPage> {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < itineraries!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: itineraries![i].id,
-            title: itineraries![i].trip_name,
-            secondaryInfo: itineraries![i].operator_name,
-            extraInfo: '${itineraries![i].date} • ${itineraries![i].classification}',
-            imageUrl: itineraries![i].image_url,
+    if (itineraries != null) {
+      for (var i = 0; i < itineraries!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: itineraries![i].id,
+              title: itineraries![i].trip_name,
+              secondaryInfo: itineraries![i].operator_name,
+              extraInfo: '${itineraries![i].date} • ${itineraries![i].classification}',
+              imageUrl: itineraries![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
@@ -83,8 +91,8 @@ class _OperatorPageState extends State<OperatorPage> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.maxFinite,
-          height: descriptionCollapsed ? 930 : 1000,
-          child: Stack(
+          height: loadingOperatorData ? MediaQuery.of(context).size.height : (descriptionCollapsed ? 930 : 1000),
+          child: !loadingOperatorData ? Stack(
             children: [
               Positioned(
                 left: 0,
@@ -185,43 +193,29 @@ class _OperatorPageState extends State<OperatorPage> {
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 24, bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  'Próximos destinos',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                          WrapperSection(
+                            title: 'Próximos destinos',
+                            loading: loadingItinerariesData && (itineraries == null || itineraries!.isEmpty),
+                            isEmpty: itineraries == null || itineraries!.isEmpty,
+                            fallback: const Text('Nenhum roteiro recomendado'),
+                            append: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'operator_id': operator!.id })),
+                                  );
+                              },
+                              child: const Text(
+                                'Ver mais',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: mediumGreyColor,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => ResultsPage(params: { 'operator_id': operator!.id })),
-                                      );
-                                  },
-                                  child: const Text(
-                                    'Ver mais',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: mediumGreyColor,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                          Container(
-                            child: !loadingItinerariesData ?
-                              getComingListWidget()
-                              : const Text('Nenhum recomendado'),
+                            child: getComingListWidget(),
                           ),
                           Container(
                             padding: const EdgeInsets.only(top: 24, bottom: 16),
@@ -277,6 +271,22 @@ class _OperatorPageState extends State<OperatorPage> {
                       ),
                     ],
                   ) : null,
+                ),
+              ),
+            ],
+          )
+          : Stack(
+            children: [
+              Positioned(
+                top: MediaQuery.of(context).size.height/2 - 35*2,
+                left: MediaQuery.of(context).size.width/2 - 35/2,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 32.0),
+                  width: 35.0,
+                  height: 35.0,
+                  child: const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color> (primaryColor),
+                  ),
                 ),
               ),
             ],
