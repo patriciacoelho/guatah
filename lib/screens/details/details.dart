@@ -10,6 +10,7 @@ import 'package:guatah/widgets/custom_app_bar.dart';
 import 'package:guatah/widgets/list_item.dart';
 import 'package:guatah/widgets/simple_card_item.dart';
 import 'package:guatah/widgets/trip_tag_dialog.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -26,9 +27,9 @@ class _DetailsPageState extends State<DetailsPage> {
   Itinerary? itinerary;
   List<Itinerary>? itinerariesSuggestions;
   List<Operator>? operators;
-  bool loadingData = true;
-  bool loadingOperatorsData = true;
-  bool loadingItinerariesSuggestionsData = true;
+  bool loadingData = false;
+  bool loadingOperatorsData = false;
+  bool loadingItinerariesSuggestionsData = false;
 
   bool descriptionCollapsed = true;
 
@@ -39,7 +40,9 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   getData() async {
-    log('details id: ', error: widget.id);
+    setState(() {
+      loadingData = true;
+    });
     itinerary = await RemoteService().getItineraryDetails(id: widget.id);
     if (itinerary != null) {
       log("debug message (details)", error: itinerary!.trip_name);
@@ -52,6 +55,9 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   getOperatorsData() async {
+    setState(() {
+      loadingOperatorsData = true;
+    });
     List<Operator>? allOperators = await RemoteService().getOperators({ 'pickup_id': itinerary!.pickup_city_ids[0] });
     if (allOperators != null) {
       operators = allOperators.where((operator) => operator.id != itinerary!.operator_id).toList();
@@ -63,6 +69,9 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   getSuggestionsData() async {
+    setState(() {
+      loadingItinerariesSuggestionsData = true;
+    });
     List<Itinerary>? itinerariesByCategory = await RemoteService().getItineraries({ 'categories': itinerary!.trip_categories, 'take': '3' });
     if (itinerariesByCategory != null) {
       itinerariesSuggestions = itinerariesByCategory.where((item) => item.id != itinerary!.id).toList();
@@ -80,17 +89,19 @@ class _DetailsPageState extends State<DetailsPage> {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < operators!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: SimpleCardItem(
-            id: operators![i].id,
-            title: operators![i].name,
-            imageUrl: operators![i].image_url,
+    if (operators != null) {
+      for (var i = 0; i < operators!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: SimpleCardItem(
+              id: operators![i].id,
+              title: operators![i].name,
+              imageUrl: operators![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -103,24 +114,25 @@ class _DetailsPageState extends State<DetailsPage> {
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < itinerariesSuggestions!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: itinerariesSuggestions![i].id,
-            title: itinerariesSuggestions![i].trip_name,
-            secondaryInfo: itinerariesSuggestions![i].operator_name,
-            extraInfo: '${itinerariesSuggestions![i].date} • ${itinerariesSuggestions![i].classification}',
-            imageUrl: itinerariesSuggestions![i].image_url,
+    if (itinerariesSuggestions != null) {
+      for (var i = 0; i < itinerariesSuggestions!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: itinerariesSuggestions![i].id,
+              title: itinerariesSuggestions![i].trip_name,
+              secondaryInfo: itinerariesSuggestions![i].operator_name,
+              extraInfo: '${itinerariesSuggestions![i].date} • ${itinerariesSuggestions![i].classification}',
+              imageUrl: itinerariesSuggestions![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,8 +141,8 @@ class _DetailsPageState extends State<DetailsPage> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.maxFinite,
-          height: descriptionCollapsed ? 1000 : 1080,
-          child: Stack(
+          height: loadingData ? MediaQuery.of(context).size.height : (descriptionCollapsed ? 1000 : 1080),
+          child: !loadingData ? Stack(
             children: [
               Positioned(
                 left: 0,
@@ -301,71 +313,43 @@ class _DetailsPageState extends State<DetailsPage> {
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 24, bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  'Outros roteiros sugeridos',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
+                          WrapperSection(
+                            title: 'Outros roteiros sugeridos',
+                            loading: loadingItinerariesSuggestionsData && (itinerariesSuggestions == null || itinerariesSuggestions!.isEmpty),
+                            isEmpty: itinerariesSuggestions == null || itinerariesSuggestions!.isEmpty,
+                            fallback: const Text('Nenhuma sugestão de viagem'),
+                            append: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories })),
+                                  );
+                              },
+                              child: const Text(
+                                'Ver mais',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: mediumGreyColor,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories })),
-                                      );
-                                  },
-                                  child: const Text(
-                                    'Ver mais',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: mediumGreyColor,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
+                            child: getSuggestionListWidget(),
                           ),
-                          Container(
-                            child: !loadingItinerariesSuggestionsData ?
-                              getSuggestionListWidget()
-                              : const Text('Nenhuma sugestão de viagem'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 24, bottom: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Outras empresas na região',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
+                          WrapperSection(
+                            title: 'Outras empresas na região',
+                            loading: loadingOperatorsData && (operators == null || operators!.isEmpty),
+                            isEmpty: operators == null || operators!.isEmpty,
+                            fallback: const Text('Nenhuma empresa encontrada'),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: 140.0,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [getOperatorsList()],
+                              ),
                             ),
-                          ),
-                          Container(
-                            child: !loadingOperatorsData ?
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: 140.0,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [getOperatorsList()],
-                                ),
-                              )
-                              : const Text('Nenhuma empresa encontrada'),
                           ),
                         ]
                       ),
@@ -374,10 +358,26 @@ class _DetailsPageState extends State<DetailsPage> {
                 ),
               ),
             ],
-          ),
+          )
+          : Stack(
+              children: [
+                Positioned(
+                  top: MediaQuery.of(context).size.height/2 - 35*2,
+                  left: MediaQuery.of(context).size.width/2 - 35/2,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 32.0),
+                    width: 35.0,
+                    height: 35.0,
+                    child: const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color> (primaryColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: !loadingData ? BottomAppBar(
         elevation: 0,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -417,7 +417,7 @@ class _DetailsPageState extends State<DetailsPage> {
               ),
             ]),
         ),
-      ),
+      ) : null,
     );
   }
 }
