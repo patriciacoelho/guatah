@@ -9,6 +9,7 @@ import 'package:guatah/widgets/custom_navigation_bar.dart';
 import 'package:guatah/widgets/dash_tab_indicator.dart';
 import 'package:guatah/widgets/highlight_card_item.dart';
 import 'package:guatah/widgets/list_item.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 
 class DiscoveryPage extends StatefulWidget {
   const DiscoveryPage({super.key});
@@ -29,11 +30,11 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   List<Itinerary>? specialTrips;
   List<Itinerary>? experienceTrips;
   List<Itinerary>? partyTrips;
-  bool loadingCalendarItems = true;
-  bool loadingDreamTrips = true;
-  bool loadingCheapTrips = true;
-  bool loadingEcotourismTrips = true;
-  bool loadingSpecialTripsData = true;
+  bool loadingCalendarItems = false;
+  bool loadingDreamTrips = false;
+  bool loadingCheapTrips = false;
+  bool loadingEcotourismTrips = false;
+  bool loadingSpecialTripsData = false;
   bool loadingExperienceTripsData = true;
   bool loadingPartyTripsData = true;
 
@@ -61,6 +62,9 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   }
 
   getCalendarItems() async {
+    setState(() {
+      loadingCalendarItems = true;
+    });
     calendarItems = await RemoteService().getItineraries({ 'take': '4' });
     if (calendarItems != null) {
       log("debug message (calendar)", error: calendarItems);
@@ -71,6 +75,9 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   }
 
   getDreamTrips() async {
+    setState(() {
+      loadingDreamTrips = true;
+    });
     dreamTrips = await RemoteService().getItineraries({ 'take': '2', 'desc_order_by': 'price' });
     if (dreamTrips != null) {
       log("debug message (dream trip)", error: dreamTrips);
@@ -81,6 +88,9 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   }
 
   getCheapTrips() async {
+    setState(() {
+      loadingCheapTrips = true;
+    });
     cheapTrips = await RemoteService().getItineraries({ 'take': '2', 'asc_order_by': 'price' });
     if (cheapTrips != null) {
       log("debug message (cheap trip)", error: cheapTrips);
@@ -91,6 +101,9 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   }
 
   getEcotourismTrips() async {
+    setState(() {
+      loadingEcotourismTrips = true;
+    });
     ecotourismTrips = await RemoteService().getItineraries({ 'take': '2', 'categories': ['6347eb2f7f395d1606e2ccd2'] });
     if (ecotourismTrips != null) {
       log("debug message (ecotourism trip)", error: ecotourismTrips);
@@ -101,6 +114,9 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   }
 
   getSpecialTripsData() async {
+    setState(() {
+      loadingSpecialTripsData = true;
+    });
     specialTrips = await RemoteService().getItineraries({ 'take': '2', 'categories': ['63bac4bd5e1a89f1a873607b'] });
     if (specialTrips != null) {
       log("debug message (special trips)", error: specialTrips);
@@ -140,19 +156,21 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < dreamTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: dreamTrips![i].id,
-            title: dreamTrips![i].trip_name,
-            secondaryInfo: dreamTrips![i].operator_name,
-            extraInfo: '${dreamTrips![i].date} • ${dreamTrips![i].classification}',
-            imageUrl: dreamTrips![i].image_url,
+    if (dreamTrips != null) {
+      for (var i = 0; i < dreamTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: dreamTrips![i].id,
+              title: dreamTrips![i].trip_name,
+              secondaryInfo: dreamTrips![i].operator_name,
+              extraInfo: '${dreamTrips![i].date} • ${dreamTrips![i].classification}',
+              imageUrl: dreamTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
@@ -162,19 +180,21 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < cheapTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: cheapTrips![i].id,
-            title: cheapTrips![i].trip_name,
-            secondaryInfo: cheapTrips![i].operator_name,
-            extraInfo: '${cheapTrips![i].date} • ${cheapTrips![i].classification}',
-            imageUrl: cheapTrips![i].image_url,
+    if (cheapTrips != null) {
+      for (var i = 0; i < cheapTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: cheapTrips![i].id,
+              title: cheapTrips![i].trip_name,
+              secondaryInfo: cheapTrips![i].operator_name,
+              extraInfo: '${cheapTrips![i].date} • ${cheapTrips![i].classification}',
+              imageUrl: cheapTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
@@ -184,19 +204,21 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < ecotourismTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ListItem(
-            id: ecotourismTrips![i].id,
-            title: ecotourismTrips![i].trip_name,
-            secondaryInfo: ecotourismTrips![i].operator_name,
-            extraInfo: '${ecotourismTrips![i].date} • ${ecotourismTrips![i].classification}',
-            imageUrl: ecotourismTrips![i].image_url,
+    if (ecotourismTrips != null) {
+      for (var i = 0; i < ecotourismTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ListItem(
+              id: ecotourismTrips![i].id,
+              title: ecotourismTrips![i].trip_name,
+              secondaryInfo: ecotourismTrips![i].operator_name,
+              extraInfo: '${ecotourismTrips![i].date} • ${ecotourismTrips![i].classification}',
+              imageUrl: ecotourismTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Column(children: list);
@@ -206,20 +228,22 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < specialTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: specialTrips![i].id,
-            trip_id: specialTrips![i].trip_id,
-            title: specialTrips![i].trip_name,
-            subtitle: specialTrips![i].operator_name,
-            date: specialTrips![i].date,
-            imageUrl: specialTrips![i].image_url,
+    if (specialTrips != null) {
+      for (var i = 0; i < specialTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: specialTrips![i].id,
+              trip_id: specialTrips![i].trip_id,
+              title: specialTrips![i].trip_name,
+              subtitle: specialTrips![i].operator_name,
+              date: specialTrips![i].date,
+              imageUrl: specialTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -232,20 +256,22 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < experienceTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: experienceTrips![i].id,
-            trip_id: experienceTrips![i].trip_id,
-            title: experienceTrips![i].trip_name,
-            subtitle: experienceTrips![i].operator_name,
-            date: experienceTrips![i].date,
-            imageUrl: experienceTrips![i].image_url,
+    if (experienceTrips != null) {
+      for (var i = 0; i < experienceTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: experienceTrips![i].id,
+              trip_id: experienceTrips![i].trip_id,
+              title: experienceTrips![i].trip_name,
+              subtitle: experienceTrips![i].operator_name,
+              date: experienceTrips![i].date,
+              imageUrl: experienceTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -258,20 +284,22 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
   {
     List<Widget> list = <Widget>[];
 
-    for (var i = 0; i < partyTrips!.length; i++) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: HighlightCardItem(
-            id: partyTrips![i].id,
-            trip_id: partyTrips![i].trip_id,
-            title: partyTrips![i].trip_name,
-            subtitle: partyTrips![i].operator_name,
-            date: partyTrips![i].date,
-            imageUrl: partyTrips![i].image_url,
+    if (partyTrips != null) {
+      for (var i = 0; i < partyTrips!.length; i++) {
+        list.add(
+          Container(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: HighlightCardItem(
+              id: partyTrips![i].id,
+              trip_id: partyTrips![i].trip_id,
+              title: partyTrips![i].trip_name,
+              subtitle: partyTrips![i].operator_name,
+              date: partyTrips![i].date,
+              imageUrl: partyTrips![i].image_url,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Row(
@@ -306,33 +334,12 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Esses cabem no bolso...',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Ver mais',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: !loadingCheapTrips ?
-                      getCheapTripsWidget()
-                      : const Text('Nenhum encontrado'),
+                  WrapperSection(
+                    title: 'Esses cabem no bolso...',
+                    loading: loadingCheapTrips && (cheapTrips == null || cheapTrips!.isEmpty),
+                    isEmpty: cheapTrips == null || cheapTrips!.isEmpty,
+                    fallback: const Text('Nenhum roteiro encontrado'),
+                    child: getCheapTripsWidget(),
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -358,26 +365,35 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingSpecialTripsData ?
-                            Row(children: [getSpecialTripsWidget()])
-                            : const Text('Nenhum item especial'),
+                        WrapperSection(
+                          loading: loadingSpecialTripsData && (specialTrips == null || specialTrips!.isEmpty),
+                          isEmpty: specialTrips == null || specialTrips!.isEmpty,
+                          fallback: const Text('Nenhuma viagem especial encontrada'),
+                          child: SizedBox(
+                            height: 225,
+                            width: double.maxFinite,
+                            child: Row(children: [getSpecialTripsWidget()]),
+                          ),
                         ),
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingExperienceTripsData ?
-                            Row(children: [getExperienceTripsWidget()])
-                            : const Text('Nenhum item de experiência'),
+                        WrapperSection(
+                          loading: loadingExperienceTripsData && (experienceTrips == null || experienceTrips!.isEmpty),
+                          isEmpty: experienceTrips == null || experienceTrips!.isEmpty,
+                          fallback: const Text('Nenhuma viagem de experiência encontrada'),
+                          child: SizedBox(
+                            height: 225,
+                            width: double.maxFinite,
+                            child: Row(children: [getExperienceTripsWidget()]),
+                          ),
                         ),
-                        SizedBox(
-                          height: double.maxFinite,
-                          width: double.maxFinite,
-                          child: !loadingPartyTripsData ?
-                            Row(children: [getPartyTripsWidget()])
-                            : const Text('Nenhum item de festa'),
+                        WrapperSection(
+                          loading: loadingPartyTripsData && (partyTrips == null || partyTrips!.isEmpty),
+                          isEmpty: partyTrips == null || partyTrips!.isEmpty,
+                          fallback: const Text('Nenhuma viagem de festa encontrada'),
+                          child: SizedBox(
+                            height: 205,
+                            width: double.maxFinite,
+                            child: Row(children: [getPartyTripsWidget()]),
+                          ),
                         ),
                       ],
                     )
@@ -398,64 +414,25 @@ class _DiscoveryPageState extends State<DiscoveryPage> with TickerProviderStateM
                       ],
                     ),
                   ),
-                  Container(
-                    child: !loadingCalendarItems && calendarItems != null ? CalendarList(items: calendarItems ?? []) : null,
+                  WrapperSection(
+                    loading: loadingCalendarItems && (calendarItems == null || calendarItems!.isEmpty),
+                    isEmpty: calendarItems == null || calendarItems!.isEmpty,
+                    fallback: const Text('Nenhuma agenda encontrada'),
+                    child: CalendarList(items: calendarItems ?? []),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Viagens dos sonhos',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Ver mais',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
+                  WrapperSection(
+                    title: 'Viagens dos sonhos',
+                    loading: loadingDreamTrips && (dreamTrips == null || dreamTrips!.isEmpty),
+                    isEmpty: dreamTrips == null || dreamTrips!.isEmpty,
+                    fallback: const Text('Nenhum roteiro encontrado'),
+                    child: getDreamTripsWidget(),
                   ),
-                  Container(
-                    child: !loadingDreamTrips ?
-                      getDreamTripsWidget()
-                      : const Text('Nenhum encontrado'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 24, bottom: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Ecoturismo',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          'Ver mais',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: !loadingEcotourismTrips ?
-                      getEcotourismTripsWidget()
-                      : const Text('Nenhum encontrado'),
+                  WrapperSection(
+                    title: 'Ecoturismo',
+                    loading: loadingEcotourismTrips && (ecotourismTrips == null || ecotourismTrips!.isEmpty),
+                    isEmpty: ecotourismTrips == null || ecotourismTrips!.isEmpty,
+                    fallback: const Text('Nenhum roteiro encontrado'),
+                    child: getEcotourismTripsWidget(),
                   ),
                 ],
               ),
