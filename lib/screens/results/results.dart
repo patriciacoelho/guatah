@@ -7,6 +7,7 @@ import 'package:guatah/widgets/custom_input.dart';
 import 'package:guatah/models/itinerary.dart';
 import 'package:guatah/services/remote_service.dart';
 import 'package:guatah/widgets/list_item.dart';
+import 'package:guatah/widgets/wrapper_section.dart';
 import 'package:ionicons/ionicons.dart';
 
 class ResultsPage extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ResultsPageState extends State<ResultsPage> {
   final searchController = TextEditingController();
 
   List<Itinerary>? itineraries;
-  bool loadingData = true;
+  bool loadingData = false;
 
   Map<String, dynamic>? _params;
   List<Map<String, dynamic>?>? _filters;
@@ -45,6 +46,9 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   getData() async {
+    setState(() {
+      loadingData = true;
+    });
     itineraries = await RemoteService().getItineraries(_params);
     if (itineraries != null) {
       log("debug message", error: itineraries);
@@ -69,10 +73,10 @@ class _ResultsPageState extends State<ResultsPage> {
         'key': 'end_date',
         'text': widget.filters!['interval'],
       },
-      {
+      widget.filters!['classification'] != null ? {
         'key': 'classification',
         'text': widget.filters!['classification'],
-      },
+      } : null,
     ];
     setState(() {
       searchController.text = widget.filters!['search'];
@@ -111,7 +115,7 @@ class _ResultsPageState extends State<ResultsPage> {
             child: Wrap(
               children: [
                 Text(
-                  item['text'],
+                  item['text'] ?? '',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14.0,
@@ -154,6 +158,7 @@ class _ResultsPageState extends State<ResultsPage> {
   {
     List<Widget> list = <Widget>[];
 
+  if (itineraries != null) {
     for (var i = 0; i < itineraries!.length; i++) {
       list.add(
         ListItem(
@@ -165,6 +170,7 @@ class _ResultsPageState extends State<ResultsPage> {
         ),
       );
     }
+  }
 
     return Column(children: list);
   }
@@ -206,11 +212,11 @@ class _ResultsPageState extends State<ResultsPage> {
                   ],
                 ) : null,
             ),
-            Container(
-              padding: const EdgeInsets.only(top: 24),
-              child: !loadingData ?
-                getListItemWidgets()
-                : const Text('Nenhum item'),
+            WrapperSection(
+              loading: loadingData && (itineraries == null || itineraries!.isEmpty),
+              isEmpty: itineraries == null || itineraries!.isEmpty,
+              fallback: const Text('Nenhuma roteiro encontrado'),
+              child: getListItemWidgets()
             ),
           ],
         ),
