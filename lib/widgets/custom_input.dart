@@ -40,9 +40,12 @@ class CustomInput extends StatelessWidget {
           child: TextField(
             controller: controller,
             onSubmitted: (value) {
+              final params = {
+                'search': controller != null ? controller!.text : null,
+              };
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ResultsPage()),
+                MaterialPageRoute(builder: (context) => ResultsPage(params: params, filters: params)),
               );
             },
             decoration: InputDecoration(

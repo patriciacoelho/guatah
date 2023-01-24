@@ -322,7 +322,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               onTap: () {
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories })),
+                                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': itinerary!.trip_categories }, filters: const {})),
                                   );
                               },
                               child: const Text(

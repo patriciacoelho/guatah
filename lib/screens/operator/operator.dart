@@ -200,9 +200,14 @@ class _OperatorPageState extends State<OperatorPage> {
                             fallback: const Text('Nenhum roteiro recomendado'),
                             append: InkWell(
                               onTap: () {
+                                final filters = {
+                                  'operator': operator != null ? operator!.name : null,
+                                };
                                 Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'operator_id': operator!.id })),
+                                    MaterialPageRoute(
+                                      builder: (context) => ResultsPage(params: { 'operator_id': operator!.id }, filters: filters)
+                                    ),
                                   );
                               },
                               child: const Text(

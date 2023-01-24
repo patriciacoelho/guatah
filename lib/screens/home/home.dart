@@ -29,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   var pageIndex = 0;
   late TabController _tabController;
+  final searchController = TextEditingController();
 
   List<Operator>? operators;
   List<Category>? categories;
@@ -53,6 +54,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     getOperatorsData();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_handleTabSelection);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   void _handleTabSelection() {
@@ -267,9 +274,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: GestureDetector(
               onTap: () {
                 final categoryId = categories![i].id;
+                final filters = {
+                  'category': categories![i].name,
+                };
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': [categoryId] })),
+                    MaterialPageRoute(builder: (context) => ResultsPage(params: { 'categories': [categoryId] }, filters: filters)),
                   );
               },
               child: RoundedItem(
@@ -347,7 +357,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  const CustomInput(
+                  CustomInput(
+                    controller: searchController,
                     searchType: true,
                     hintText: 'Buscar lugares',
                   ),
