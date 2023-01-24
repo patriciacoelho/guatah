@@ -24,7 +24,7 @@ class _ResultsPageState extends State<ResultsPage> {
   final searchController = TextEditingController();
 
   List<Itinerary>? itineraries;
-  bool loadingData = false;
+  bool loadingData = true;
 
   Map<String, dynamic>? _params;
   List<Map<String, dynamic>?>? _filters;
@@ -46,9 +46,6 @@ class _ResultsPageState extends State<ResultsPage> {
   }
 
   getData() async {
-    setState(() {
-      loadingData = true;
-    });
     itineraries = await RemoteService().getItineraries(_params);
     if (itineraries != null) {
       log("debug message", error: itineraries);
@@ -69,17 +66,17 @@ class _ResultsPageState extends State<ResultsPage> {
         'key': 'operator_id',
         'text': 'Empresa: ${widget.filters!['operator']}',
       } : null,
-      {
+      widget.filters!['interval'] != null ? {
         'key': 'end_date',
         'text': widget.filters!['interval'],
-      },
+      } : null,
       widget.filters!['classification'] != null ? {
         'key': 'classification',
         'text': widget.filters!['classification'],
       } : null,
     ];
     setState(() {
-      searchController.text = widget.filters!['search'];
+      searchController.text = widget.filters!['search'] ?? '';
       _filters = items;
     });
     log("filters: ", error: _filters.toString());
@@ -179,44 +176,52 @@ class _ResultsPageState extends State<ResultsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Container(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: ListView(
           children: [
-            const CustomAppBar(pageTitle: 'Resultados'),
             Container(
-              padding: const EdgeInsets.only(top: 24),
-              child: CustomInput(
-                searchType: true,
-                controller: searchController,
-                hintText: 'Buscar lugares',
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: hasFilters() ? 
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 4.0),
-                      child: const Text(
-                        'Filtros aplicados',
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomAppBar(pageTitle: 'Resultados'),
+                  Container(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: CustomInput(
+                      searchType: true,
+                      controller: searchController,
+                      hintText: 'Buscar lugares',
                     ),
-                    getFiltersWidgets(),
-                  ],
-                ) : null,
-            ),
-            WrapperSection(
-              loading: loadingData && (itineraries == null || itineraries!.isEmpty),
-              isEmpty: itineraries == null || itineraries!.isEmpty,
-              fallback: const Text('Nenhuma roteiro encontrado'),
-              child: getListItemWidgets()
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: hasFilters() ? 
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 4.0),
+                            child: const Text(
+                              'Filtros aplicados',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          getFiltersWidgets(),
+                        ],
+                      ) : null,
+                  ),
+                  WrapperSection(
+                    loading: loadingData && (itineraries == null || itineraries!.isEmpty),
+                    isEmpty: itineraries == null || itineraries!.isEmpty,
+                    fallback: const Text('Nenhuma roteiro encontrado'),
+                    child: getListItemWidgets(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
