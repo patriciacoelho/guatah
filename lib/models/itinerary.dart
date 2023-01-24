@@ -56,7 +56,7 @@ class Itinerary {
   factory Itinerary.fromJson(Map<String, dynamic> json) => Itinerary(
     id: json['_id'] ?? const Uuid().v4(),
     pickup_city_ids: json['pickup_city_ids'].cast<String>(),
-    image_url: json['trip']['image_url'],
+    image_url: json['trip']['image_url'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6bkZX4V5o8QaYeLVo2nYurPqwOS4hDeVytU5BCz7NOPUC9hLp0vZDYIofJzDBpT2XHhc&usqp=CAU',
     trip_name: json['trip']['name'],
     trip_categories: json['trip']['categories'].cast<String>(),
     operator_name: json['operator']['name'],
