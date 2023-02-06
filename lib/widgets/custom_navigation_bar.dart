@@ -64,14 +64,14 @@ class CustomNavigationBar extends StatelessWidget {
           label: 'Marcados',
           backgroundColor: Colors.white,
         ),
-        BottomNavigationBarItem(
-          icon: BottomNavigationIcon(
-            pageIndex == 3 ? Ionicons.settings : Ionicons.settings_outline,
-            isActive: pageIndex == 3,
-          ),
-          label: 'Configurações',
-          backgroundColor: Colors.white,
-        ),
+        // BottomNavigationBarItem(
+        //   icon: BottomNavigationIcon(
+        //     pageIndex == 3 ? Ionicons.settings : Ionicons.settings_outline,
+        //     isActive: pageIndex == 3,
+        //   ),
+        //   label: 'Configurações',
+        //   backgroundColor: Colors.white,
+        // ),
       ],
     );
   }
